@@ -1,0 +1,135 @@
+* {
+	margin:0px;
+	padding:0px;
+}
+div.clear{clear:both;}
+body {
+	background:#000;
+	color:#DF7401;
+}
+a {
+	color:#DF7401;
+	text-decoration:none;
+}
+div#container {
+	margin:15px auto;
+	text-align:left;
+	width:898px;
+	border:3px solid #CCC;
+	box-shadow: 0px 0px 120px #6E6E6E;
+	
+	-webkit-border-radius: 10px;
+	-moz-border-radius: 10px;
+	border-radius: 10px;
+}
+
+/*
+ *	HEADER
+ */
+div#header {
+	width:900px;
+	height:375px;
+	background-image:url('../img/logo.png');
+	background-repeat:no-repeat;
+	background-position:-10px -15px;
+	margin:2px;
+}
+div#header div#status {
+	border:0px;
+	position:relative;
+	right:0px;
+	top:2px;
+	width:140px;
+	float:right;
+}
+div#header div#status iframe.playerstatus {
+	height:140px;
+	width:135px;
+	border:0px;
+	overflow:hidden;
+}
+div#header div#player {
+	position:relative;
+	right:20px;
+	top:180px;
+	width:100px;
+	float:right;
+	text-align:center;
+	font-size:14px;
+	-webkit-box-shadow: 0px 0px 30px 0px rgba(255, 255, 255, 0.75);
+	-moz-box-shadow:    0px 0px 30px 0px rgba(255, 255, 255, 0.75);
+	box-shadow:         0px 0px 30px 0px rgba(255, 255, 255, 0.75);
+	-webkit-border-radius: 10px;
+	-moz-border-radius: 10px;
+	border-radius: 10px;
+}
+div#header div#player a {
+	display:block;
+}
+/*
+ *	NAVIGATION
+ */
+div#navigation{
+	width:898px;
+}
+div#navigation ul {
+	list-style-type:none;
+}
+div#navigation ul li {
+	float:left;
+	padding:7px;
+	font-size:16px;
+	font-family:Verdana;
+	margin:5px;
+	margin-bottom:-2px;
+	border:2px solid #CCC;
+	-webkit-border-top-left-radius: 10px;
+	-webkit-border-top-right-radius: 10px;
+	-moz-border-radius-topleft: 10px;
+	-moz-border-radius-topright: 10px;
+	border-top-left-radius: 10px;
+	border-top-right-radius: 10px;
+}
+div#navigation li:hover {
+	border:2px solid #FFFFFF;
+}
+
+/*
+ *	INHALT
+ */
+div#content {
+	width:auto;
+	min-height:300px;
+	padding:10px;
+	border-top:2px solid #CCC;
+	border-bottom:2px solid #CCC;
+}
+
+span.highlight {
+	color:#F7D358;
+}
+table.table_termine {
+	width:100%;
+}
+table.table_termine tbody td {
+	
+}
+
+form.contactform input {
+	margin:5px;
+}
+
+/*
+ *	FUßBEREICH
+ */
+div#footer {
+	width:896px;
+	border:0px;
+	padding:5px;
+}
+div#footer ul {
+	list-style-type:none;
+}
+div#footer ul li {
+	float:left;
+}
