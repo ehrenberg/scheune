@@ -1,9 +1,11 @@
 <?php
 include_once 'config.inc.php';
-include_once 'class/db.class.php';
-$db		= new DB(DATABASE,HOST,USER,PASSWORD);
+include_once 'class/mysqli.class.php';
+$db		= new MysqliDb(HOST,USER,PASSWORD,DATABASE);
 $mysqli = new mysqli(HOST, USER, PASSWORD, DATABASE);
 $mysqli->query("set names 'utf8'");
+
+header('content-type: text/html; charset=utf-8');
 
 /*
  *	FUNCTIONS
