@@ -8,66 +8,42 @@ $inhalt				= null;
 $jahr				= Date("Y");
 $kalenderwoche		= strftime("%V");
 $tabelle_termine	= null;
-
+$i					= null;
 
 $monday		= new DateTime('last monday');
-$sunday		= new DateTime('next sunday');
 
-$cols	= array("ID", "Text", "Von", "Bis");
-$db->where("Von", $monday->format('d.m.Y H:i:s'), ">");
-$db->where("Bis", $sunday->format('d.m.Y H:i:s'), "<");
-$termine	= $db->get(T_TERMINE, null, $cols);
-
-foreach ($termine as $termin) { 
-	print_r ($user);
-	echo '123';
-	/*
-	$inhalt .= getWochenTag(strtotime($Von));
-	$inhalt .= getWochenTag(strtotime($Bis));
-	$i++;
-	
-	if($i == 1)$wochentag = 'Montag';
-	else if($i == 2)$wochentag = 'Dienstag';
-	else if($i == 3)$wochentag = 'Mittwoch';
-	else if($i == 4)$wochentag = 'Donnerstag';
-	else if($i == 5)$wochentag = 'Freitag';
-	else if($i == 6)$wochentag = 'Samstag';
-	else if($i == 7)$wochentag = 'Sonntag';
-	
-	$tabelle_termine .= '<tr>
-							<td>'.date("d.m.Y",strtotime($Von)).'</td>
-							<td>'.$wochentag.'</td><td>'.$Text.'</td>
-							<td>'.date("H:i",strtotime($Von)).'</td>
-							<td>'.date("H:i",strtotime($Bis)).'</td>
-						</tr>';
-						*/
+//Nächster Sonntag / Heute Sonntag?
+if(date("w", time()) == 0) {
+	$sunday		= new DateTime('today');
+} else {
+	$sunday		= new DateTime('next sunday');
 }
 
-$tabelle_termine .= '<table>';
+//letzter Montag
+if(date("w", time()) == 1) {
+	$monday		= new DateTime('today');
+} else {
+	$monday		= new DateTime('last monday');
+}
 
 
-$i = 0;
-/*
-while ($stmt->fetch()) {
-	$inhalt .= getWochenTag(strtotime($Von));
-	$inhalt .= getWochenTag(strtotime($Bis));
-	$i++;
-	
-	if($i == 1)$wochentag = 'Montag';
-	else if($i == 2)$wochentag = 'Dienstag';
-	else if($i == 3)$wochentag = 'Mittwoch';
-	else if($i == 4)$wochentag = 'Donnerstag';
-	else if($i == 5)$wochentag = 'Freitag';
-	else if($i == 6)$wochentag = 'Samstag';
-	else if($i == 7)$wochentag = 'Sonntag';
+$cols		= array("ID", "Text", "Von", "Bis");
+$db->where("Von", $monday->format('Y-m-d H:i:s'), ">");
+$db->where("Bis", $sunday->format('Y-m-d').' 23:59:59', "<=");
+$termine	= $db->get(T_TERMINE, null, $cols);
+
+$tabelle_termine .= '<table class="termine">';
+foreach ($termine as $termin) {
 	
 	$tabelle_termine .= '<tr>
-							<td>'.date("d.m.Y",strtotime($Von)).'</td>
-							<td>'.$wochentag.'</td><td>'.$Text.'</td>
-							<td>'.date("H:i",strtotime($Von)).'</td>
-							<td>'.date("H:i",strtotime($Bis)).'</td>
+							<td class="wday">'.getWochenTag(strtotime($termin['Von'])).' '.date('d.m.Y',strtotime($termin['Von'])).'</td>
+							<td>'.$termin['Text'].'</td>
+							<td class="time">'.date("H:i",strtotime($termin['Von'])).'</td>
+							<td class="time">'.date("H:i",strtotime($termin['Bis'])).'</td>
 						</tr>';
-}*/
+						
+}
+
 $tabelle_termine .= '</table>';
 
 $inhalt .= $tabelle_termine;
@@ -79,7 +55,6 @@ $Template	= new tpl("main.tpl");
 $sere = array (
 		"title"				=> "Der Schuppen - Termine",
 		"inhalt"			=> $inhalt
-		//"navigation"		=> create_Navigation($mysqli)
 );
 
 echo $Template->fill_tpl("start", $sere);
