@@ -108,15 +108,24 @@ div#content {
 span.highlight {
 	color:#F7D358;
 }
-table.table_termine {
-	width:100%;
-}
-table.table_termine tbody td {
-	
-}
 
 form.contactform input {
 	margin:5px;
+}
+
+table.termine {
+	width:100%;
+}
+table.termine tr td {
+	border-bottom:1px solid #333333;
+	border-right:1px solid #333;
+	padding:3px;
+}
+table.termine tr td.wday {	
+	width:9%;
+}
+table.termine tr td.time {
+	width:8%;
 }
 
 /*
