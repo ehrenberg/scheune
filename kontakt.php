@@ -62,9 +62,8 @@ $inhalt		= $Template->fill_tpl("start", $sere);
  */
 $Template	= new tpl("main.tpl");
 $sere = array (
-		"title"				=> "Der Schuppen - Kontakt",
+		"title"				=> "Radio Rockscheune - Kontakt",
 		"inhalt"			=> $inhalt
-		//"navigation"		=> create_Navigation($mysqli)
 );
 
 echo $Template->fill_tpl("start", $sere);
