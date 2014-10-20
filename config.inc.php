@@ -14,6 +14,9 @@ define("DEFAULT_ROLE", "member");
 
 //Tabellen
 define("T_TERMINE","termine");
+define("T_ABSTIMMUNG","abstimmung");
+define("T_ABSTIMMUNG_TITEL","abstimmung_titel");
+define("T_ABSTIMMUNG_IP","abstimmung_ip");
 
 //Ordner
 define("DIR_ROOT", "/");

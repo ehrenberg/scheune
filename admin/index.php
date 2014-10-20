@@ -25,7 +25,7 @@ if(isset($_GET['p'])) {
 			} else {
 				$monday		= new DateTime('last monday');
 			}
-			#E1E1E1
+			
 			$cols		= array("ID", "Text", "Von", "Bis");
 			$db->where("Von", $monday->format('Y-m-d H:i:s'), ">");
 			$db->where("Bis", $sunday->format('Y-m-d H:i:s'), "<");
@@ -59,6 +59,34 @@ if(isset($_GET['p'])) {
 	
 		$inhalt .= '</table>';
 	}
+	//Abstimmungen
+	else if($p == 'toplist'){
+		$cols			= array("ID", "Bezeichnung", "ErstelltAm", "BearbeitetAm");
+		$abstimmungen	= $db->get(T_ABSTIMMUNG, null, $cols);
+		
+		$inhalt .= '<a class="btn" href="abstimmung.php?add">Neue Abstimmung</a>
+		<table class="standard">
+			<thead>
+				<th>Text</th>
+				<th>Erstellt Am</th>
+				<th>Bearbeitet Am</th>
+				<th></th>
+			</thead>';
+		foreach ($abstimmungen as $abstimmung) {
+			$link = 'abstimmung.php?id='.$abstimmung['ID'].'';
+		
+			$inhalt .= '<tr>
+				<td><a href="'.$link.'">'.$abstimmung['Bezeichnung'].'</a></td>
+				<td>'.date('d.m.Y H:i', strtotime($abstimmung['ErstelltAm'])).' Uhr</td>
+				<td>'.date('d.m.Y H:i', strtotime($abstimmung['BearbeitetAm'])).' Uhr</td>
+				<td>
+					<a href="abstimmung.php?edit='.$abstimmung['ID'].'"><img src="img/edit.png"></a>
+					<a href="abstimmung.php?delete='.$abstimmung['ID'].'"><img src="img/delete.png"></a>
+				</td>
+			</tr>';
+		}
+		$inhalt .= '</table>';
+	}
 }
 
 ?>
@@ -74,6 +102,7 @@ if(isset($_GET['p'])) {
 				<li><a href="../">Zurück zur Webseite</a></li>
 				<li><a href="index.php">Startseite</a></li>
 				<li><a href="index.php?p=termine">Terminkalendar</a></li>
+				<li><a href="index.php?p=toplist">Abstimmungen</a></li>
 			</ul>
 		</div>
 		<div id="content">

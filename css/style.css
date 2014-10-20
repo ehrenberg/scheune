@@ -116,16 +116,27 @@ form.contactform input {
 table.termine {
 	width:100%;
 }
+table.termine thead th{
+	border-bottom:1px solid #ccc;
+	padding:3px;
+}
 table.termine tr td {
 	border-bottom:1px solid #333333;
 	border-right:1px solid #333;
 	padding:3px;
 }
 table.termine tr td.wday {	
-	width:9%;
+	width:10%;
+	color:#F7D358;
 }
 table.termine tr td.time {
-	width:8%;
+	width:7%;
+}
+
+a.btnVote {
+	background-color:#303030;
+	border:1px solid #333;
+	margin:5px;
 }
 
 /*
