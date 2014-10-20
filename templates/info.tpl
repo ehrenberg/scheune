@@ -1,4 +1,7 @@
 [start]
 <p>Radio RockScheue 24 Stunden non stop werbefreie Edelware</p>
 <br />
-<img src="img/no_limit.png">
+<div style="float:right;top:0px;position:relative;">
+	<img src="img/info-scheune.png">
+</div>
+<div  class="clear"></div>

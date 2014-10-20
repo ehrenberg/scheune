@@ -37,4 +37,8 @@ Wir verzichten hier absichtlich auf Glitzerfummel und Werbebanner-Geblinke !!!  
 <br/>
 <br/>
 <br/>
-Have Fun. Rock on!
+Have Fun. Rock on!<br/>
+<div style="float:right;top:0px;position:relative;">
+	<img src="img/ohrenfeindt.jpg">
+</div>
+<div class="clear"></div>

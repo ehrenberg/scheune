@@ -12,11 +12,11 @@
 <div id="container">
 	<div id="header">
 		<div id="status">
-			<iframe scrolling="no" class="playerstatus" src="http://status.streamplus.de/active2.php?serverid=24478&onlinecolor=black"></iframe>
+			<iframe scrolling="no" class="playerstatus" src="http://status.streamplus.de/active2.php?serverid=26174&onlinecolor=black"></iframe>
 		</div>
 		<div class="clear"></div>
 		<div id="player">
-			Auf Sendung :   <br/>  Rock NonStop<br/>
+			Auf Sendung :   <br/>Rock NonStop<br/>
 			<a href="http://login.streamplus.de/app.php/shoutcast/public/playlist/download/26174.m3u"><img src="img/radio.png"><br/>Zum Radio</a>
 		</div>
 		<div class="clear"></div>
@@ -27,13 +27,13 @@
 			<a href="kontakt.php"><li>Kontakt</li></a>
 			<a href="termine.php"><li>Termine</li></a>
 			<a href="toplist.php"><li>Abstimmen</li></a>
+			<a href="info.php"><li>Info</li></a>
 		</ul>
 		<div class="clear"></div>
 	</div>
 	<div id="content">
 		{INHALT}
-	</div>
-	
+	</div>	
 	<div id="footer">
 		<ul>
 			<a href="impressum.php"><li>Impressum</li></a>
@@ -42,5 +42,4 @@
 	</div>
 </div>
 </body>
-
 </html>

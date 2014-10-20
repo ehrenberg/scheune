@@ -30,9 +30,16 @@ if(date("w", time()) == 1) {
 $cols		= array("ID", "Text", "Von", "Bis");
 $db->where("Von", $monday->format('Y-m-d H:i:s'), ">");
 $db->where("Bis", $sunday->format('Y-m-d').' 23:59:59', "<=");
+$db->orderBy("Von","ASC");
 $termine	= $db->get(T_TERMINE, null, $cols);
 
-$tabelle_termine .= '<table class="termine">';
+$tabelle_termine .= '<table class="termine">
+						<thead>
+							<th>Wochentag</th>
+							<th>Sendung</th>
+							<th>Von</th>
+							<th>Bis</th>
+						</thead>';
 foreach ($termine as $termin) {
 	
 	$tabelle_termine .= '<tr>
@@ -41,7 +48,6 @@ foreach ($termine as $termin) {
 							<td class="time">'.date("H:i",strtotime($termin['Von'])).'</td>
 							<td class="time">'.date("H:i",strtotime($termin['Bis'])).'</td>
 						</tr>';
-						
 }
 
 $tabelle_termine .= '</table>';

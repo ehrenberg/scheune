@@ -61,7 +61,7 @@ if(isset($_GET['p'])) {
 	}
 	//Abstimmungen
 	else if($p == 'toplist'){
-		$cols			= array("ID", "Bezeichnung", "ErstelltAm", "BearbeitetAm");
+		$cols			= array("ID", "Bezeichnung", "ErstelltAm", "GueltigBis");
 		$abstimmungen	= $db->get(T_ABSTIMMUNG, null, $cols);
 		
 		$inhalt .= '<a class="btn" href="abstimmung.php?add">Neue Abstimmung</a>
@@ -78,7 +78,7 @@ if(isset($_GET['p'])) {
 			$inhalt .= '<tr>
 				<td><a href="'.$link.'">'.$abstimmung['Bezeichnung'].'</a></td>
 				<td>'.date('d.m.Y H:i', strtotime($abstimmung['ErstelltAm'])).' Uhr</td>
-				<td>'.date('d.m.Y H:i', strtotime($abstimmung['BearbeitetAm'])).' Uhr</td>
+				<td>'.date('d.m.Y H:i', strtotime($abstimmung['GueltigBis'])).' Uhr</td>
 				<td>
 					<a href="abstimmung.php?edit='.$abstimmung['ID'].'"><img src="img/edit.png"></a>
 					<a href="abstimmung.php?delete='.$abstimmung['ID'].'"><img src="img/delete.png"></a>
