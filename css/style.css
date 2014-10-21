@@ -29,7 +29,7 @@ div#container {
 div#header {
 	width:900px;
 	height:340px;
-	background-image:url('../img/logo.png');
+	background-image:url('../img/logo-netz.png');
 	background-repeat:no-repeat;
 	background-position:-10px -15px;
 	margin:2px;
@@ -137,6 +137,40 @@ a.btnVote {
 	background-color:#303030;
 	border:1px solid #333;
 	margin:5px;
+}
+
+/*
+ * Hinweis-Boxen
+ */
+.alert-box {
+    color:#555;
+    -webkit-border-radius: 10px;
+	-moz-border-radius: 10px;
+	border-radius: 10px;
+    font-family:Tahoma,Geneva,Arial,sans-serif;font-size:11px;
+    padding:10px 10px 10px 36px;
+    margin:10px;
+}
+.alert-box span {
+    font-weight:bold;
+    text-transform:uppercase;
+	margin-right:20px;
+}
+.error {
+    background:#ffecec url('../img/ico/error.png') no-repeat 10px 50%;
+    border:1px solid #f5aca6;
+}
+.success {
+    background:#e9ffd9 url('../img/ico/success.png') no-repeat 10px 50%;
+    border:1px solid #a6ca8a;
+}
+.warning {
+    background:#fff8c4 url('../img/ico/warning.png') no-repeat 10px 50%;
+    border:1px solid #f2c779;
+}
+.notice {
+    background:#e3f7fc url('../img/ico/notice.png') no-repeat 10px 50%;
+    border:1px solid #8ed9f6;
 }
 
 /*

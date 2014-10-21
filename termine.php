@@ -40,6 +40,7 @@ $tabelle_termine .= '<table class="termine">
 							<th>Von</th>
 							<th>Bis</th>
 						</thead>';
+						
 foreach ($termine as $termin) {
 	
 	$tabelle_termine .= '<tr>

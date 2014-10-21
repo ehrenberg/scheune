@@ -156,7 +156,8 @@ if(isset($_GET['add']) == 'week') {
 				<li><a href="../">Zurück zur Webseite</a></li>
 				<li><a href="index.php">Startseite</a></li>
 				<li><a href="index.php?p=termine">Terminkalendar</a></li>
-				<li><a href="index.php?p=toplist">Abstimmungen</a></li>
+				<li><a href="abstimmung.php">Abstimmungen</a></li>
+				<li><a href="vorschlaege.php">Abstimmungen - Vorschläge</a></li>
 			</ul>
 		</div>
 		<div id="content">

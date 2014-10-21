@@ -39,9 +39,16 @@ if(isset($_POST['add_titel'])) {
 if(isset($_POST['edit'])) {
 	$ID				= $_POST['id'];
 	$Bezeichnung	= $_POST['bezeichnung'];
+	$GueltigBis		= $_POST['gueltigbis'];
+	if(isset($_POST['Aktiv']))$Aktiv			= $_POST['Aktiv'];
+	else $Aktiv = false;
+	
+	if($Aktiv == 'on')$Aktiv = true;
 	
 	$data = Array (
 		'Bezeichnung'	=> $Bezeichnung,
+		'GueltigBis'	=> $GueltigBis,
+		'Aktiv'			=> $Aktiv
 	);
 	$db->where('ID', $ID);
 	if ($db->update(T_ABSTIMMUNG, $data))echo 'Der Eintrag wurde erfolgreich bearbeitet!';
@@ -108,15 +115,21 @@ else if(isset($_GET['delete_titel'])) {
 else if(isset($_GET['edit'])) {
 	$id = $_GET['edit'];
 	
-	$cols			= array("ID", "Bezeichnung");
+	$cols			= array("ID", "Bezeichnung", "GueltigBis", "Aktiv");
 	$db->where("ID", $id);
 	$abstimmungen	= $db->get(T_ABSTIMMUNG, null, $cols);
 	
 	foreach ($abstimmungen as $abstimmung) {
-		$inhalt .= '<form method="POST" action="index.php?p=toplist"><input type="submit" name="back" value="Zurück"></form>
+		if($abstimmung['Aktiv'] == 1)$checked = 'checked';
+		else $checked = '';
+		$inhalt .= '<form method="POST" action="abstimmung.php"><input type="submit" name="back" value="Zurück"></form>
+		<br />
 		<form method="POST">
 			<input type="text" name="bezeichnung" value="'.$abstimmung['Bezeichnung'].'" size="50"><br />
+			<input type="text" name="gueltigbis" value="'.$abstimmung['GueltigBis'].'" size="50"><br />
+			<input type="checkbox" name="Aktiv" '.$checked.'><br />
 		<input type="hidden" name="id" value="'.$abstimmung['ID'].'">
+		<br/>
 		<input type="submit" name="edit" value="Speichern">
 		</form>';
 	}
@@ -224,8 +237,33 @@ else if(isset($_GET['id'])) {
 		$inhalt .= '</table>';
 	}
 	
+} else {
+	$cols			= array("ID", "Bezeichnung", "ErstelltAm", "GueltigBis");
+	$abstimmungen	= $db->get(T_ABSTIMMUNG, null, $cols);
+	
+	$inhalt .= '<a class="btn" href="abstimmung.php?add">Neue Abstimmung</a>
+	<table class="standard">
+		<thead>
+			<th>Text</th>
+			<th>Erstellt Am</th>
+			<th>Gültig Bis</th>
+			<th></th>
+		</thead>';
+	foreach ($abstimmungen as $abstimmung) {
+		$link = 'abstimmung.php?id='.$abstimmung['ID'].'';
+	
+		$inhalt .= '<tr>
+			<td><a href="'.$link.'">'.$abstimmung['Bezeichnung'].'</a></td>
+			<td>'.date('d.m.Y H:i', strtotime($abstimmung['ErstelltAm'])).' Uhr</td>
+			<td>'.date('d.m.Y H:i', strtotime($abstimmung['GueltigBis'])).' Uhr</td>
+			<td>
+				<a href="abstimmung.php?edit='.$abstimmung['ID'].'"><img src="img/edit.png"></a>
+				<a href="abstimmung.php?delete='.$abstimmung['ID'].'"><img src="img/delete.png"></a>
+			</td>
+		</tr>';
+	}
+	$inhalt .= '</table>';
 }
-
 ?>
 <html>
 <head>
@@ -239,7 +277,8 @@ else if(isset($_GET['id'])) {
 				<li><a href="../">Zurück zur Webseite</a></li>
 				<li><a href="index.php">Startseite</a></li>
 				<li><a href="index.php?p=termine">Terminkalendar</a></li>
-				<li><a href="index.php?p=toplist">Abstimmungen</a></li>
+				<li><a href="abstimmung.php">Abstimmungen</a></li>
+				<li><a href="vorschlaege.php">Abstimmungen - Vorschläge</a></li>
 			</ul>
 		</div>
 		<div id="content">

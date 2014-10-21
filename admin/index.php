@@ -59,34 +59,6 @@ if(isset($_GET['p'])) {
 	
 		$inhalt .= '</table>';
 	}
-	//Abstimmungen
-	else if($p == 'toplist'){
-		$cols			= array("ID", "Bezeichnung", "ErstelltAm", "GueltigBis");
-		$abstimmungen	= $db->get(T_ABSTIMMUNG, null, $cols);
-		
-		$inhalt .= '<a class="btn" href="abstimmung.php?add">Neue Abstimmung</a>
-		<table class="standard">
-			<thead>
-				<th>Text</th>
-				<th>Erstellt Am</th>
-				<th>Bearbeitet Am</th>
-				<th></th>
-			</thead>';
-		foreach ($abstimmungen as $abstimmung) {
-			$link = 'abstimmung.php?id='.$abstimmung['ID'].'';
-		
-			$inhalt .= '<tr>
-				<td><a href="'.$link.'">'.$abstimmung['Bezeichnung'].'</a></td>
-				<td>'.date('d.m.Y H:i', strtotime($abstimmung['ErstelltAm'])).' Uhr</td>
-				<td>'.date('d.m.Y H:i', strtotime($abstimmung['GueltigBis'])).' Uhr</td>
-				<td>
-					<a href="abstimmung.php?edit='.$abstimmung['ID'].'"><img src="img/edit.png"></a>
-					<a href="abstimmung.php?delete='.$abstimmung['ID'].'"><img src="img/delete.png"></a>
-				</td>
-			</tr>';
-		}
-		$inhalt .= '</table>';
-	}
 }
 
 ?>
@@ -102,7 +74,8 @@ if(isset($_GET['p'])) {
 				<li><a href="../">Zurück zur Webseite</a></li>
 				<li><a href="index.php">Startseite</a></li>
 				<li><a href="index.php?p=termine">Terminkalendar</a></li>
-				<li><a href="index.php?p=toplist">Abstimmungen</a></li>
+				<li><a href="abstimmung.php">Abstimmungen</a></li>
+				<li><a href="vorschlaege.php">Abstimmungen - Vorschläge</a></li>
 			</ul>
 		</div>
 		<div id="content">

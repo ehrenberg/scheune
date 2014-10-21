@@ -16,6 +16,21 @@ if (!isset($_SERVER['HTTP_X_FORWARDED_FOR'])) {
 	$client_ip = $_SERVER['HTTP_X_FORWARDED_FOR'];
 }
 
+if(isset($_GET['add_vorschlag_ok']))$inhalt .= '<div class="alert-box notice">Danke für deinen Vorschlag!</div>';
+
+/*
+ * Vorschlag POST
+ */
+if(isset($_POST['add_vorschlag'])) {
+	$text = $_POST['vorschlag'];
+
+	//Vorschlag eintragen
+	$data = Array ("Text" => $text, "IP" => $client_ip);
+	$id = $db->insert(T_ABSTIMMUNG_VORSCHLAEGE, $data);
+	header("Location:toplist.php?add_vorschlag_ok");
+}
+
+
 /*
  * Voten
  */
@@ -87,11 +102,12 @@ if(isset($_GET['aid'])) {
 /*
  * Tabelle erstellen
  */
-$cols		= array("ID", "Bezeichnung", "GueltigBis");
+$cols		= array("ID", "Bezeichnung", "GueltigBis", "Aktiv");
 $abstimmungen	= $db->get(T_ABSTIMMUNG, null, $cols);
 
 foreach($abstimmungen as $abstimmung) {
 	$gueltigBis = new DateTime($abstimmung['GueltigBis']);
+	$aktiv		= $abstimmung['Aktiv'];
 	
 	$cols		= array("ID", "IP", "Pos", "Neg");
 	$db->where("Abstimmung_ID", $abstimmung['ID']);
@@ -112,7 +128,8 @@ foreach($abstimmungen as $abstimmung) {
 		}
 	}
 	
-	if($today <= $gueltigBis) {
+	if($aktiv == true) {
+		$inhalt .= 'Einem Titel kannst du deine Stimme geben. Einem anderen kannst du die Kugel verpassen.<br /><br />';
 		$inhalt .= '<h2>'.$abstimmung['Bezeichnung'].'</h2><h4>Bis: '.$gueltigBis->format('d.m.Y').'</h4>';
 		
 		$cols		= array("ID", "Name", "Stimmen");
@@ -141,9 +158,14 @@ foreach($abstimmungen as $abstimmung) {
 						</tr>';
 		}
 		$inhalt .= '</table>';
-	}	
+	}
 }
-
+	$inhalt .= '<form method="POST">
+					<br /><br />
+					<label>Hast du einen Vorschlag für einen geilen Titel? Dann schreib uns:</label><br /><br />
+					<input type="text" name="vorschlag" style="width:200px">
+					<input type="submit" name="add_vorschlag" value="Vorschlagen">
+				</form>';
 /*
  *	HAUPTGERÜST
  */
