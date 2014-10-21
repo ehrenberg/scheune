@@ -28,7 +28,7 @@ div#container {
  */
 div#header {
 	width:900px;
-	height:340px;
+	height:330px;
 	background-image:url('../img/logo-netz.png');
 	background-repeat:no-repeat;
 	background-position:-10px -15px;
@@ -51,8 +51,8 @@ div#header div#status iframe.playerstatus {
 div#header div#player {
 	position:relative;
 	right:20px;
-	top:100px;
-	width:100px;
+	top:90px;
+	width:130px;
 	float:right;
 	text-align:center;
 	font-size:14px;
