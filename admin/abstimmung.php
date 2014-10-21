@@ -211,6 +211,7 @@ else if(isset($_GET['id'])) {
 		
 		$inhalt .= '<form method="GET" action="abstimmung.php">
 						<input type="hidden" name="add_titel" value="">
+						<input type="hidden" name="aid" value="'.$abstimmung['ID'].'">
 						
 						Anzahl:<input type="text" name="count" size="4">
 						

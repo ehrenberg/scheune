@@ -130,7 +130,7 @@ foreach($abstimmungen as $abstimmung) {
 	
 	if($aktiv == true) {
 		$inhalt .= 'Einem Titel kannst du deine Stimme geben. Einem anderen kannst du die Kugel verpassen.<br /><br />';
-		$inhalt .= '<h2>'.$abstimmung['Bezeichnung'].'</h2><h4>Bis: '.$gueltigBis->format('d.m.Y').'</h4>';
+		$inhalt .= '<h2>'.$abstimmung['Bezeichnung'].'</h2><h4>Bis: '.$gueltigBis->format('d.m.Y H:i').' Uhr</h4>';
 		
 		$cols		= array("ID", "Name", "Stimmen");
 		$db->orderBy("Stimmen","DESC");
@@ -139,8 +139,8 @@ foreach($abstimmungen as $abstimmung) {
 		$inhalt .= '<table class="termine">
 					<thead>
 						<th>Titel</th>
-						<th>Stimmen</th>
-						<th>Bewerten</th>
+						<th width="10%">Stimmen</th>
+						<th width="20%">Bewerten</th>
 					</thead>';
 		foreach($titeldaten as $titel) {
 
@@ -152,7 +152,7 @@ foreach($abstimmungen as $abstimmung) {
 									$inhalt .= '<a class="btnVote" href="toplist.php?aid='.$abstimmung['ID'].'&vote_pos='.$titel['ID'].'">Geil !</a>';
 								}
 								if($canVoteNeg) {
-									$inhalt .= '<a class="btnVote" href="toplist.php?aid='.$abstimmung['ID'].'&vote_neg='.$titel['ID'].'">Ne Danke</a>';
+									$inhalt .= '<a class="btnVote" href="toplist.php?aid='.$abstimmung['ID'].'&vote_neg='.$titel['ID'].'">Nö !</a>';
 								}
 							$inhalt .= '</td>
 						</tr>';
@@ -171,7 +171,7 @@ foreach($abstimmungen as $abstimmung) {
  */
 $Template	= new tpl("main.tpl");
 $sere = array (
-		"title"				=> "Der Schuppen - Wenn's nicht rockt, isses für'n Arsch",
+		"title"				=> "Rockscheune - Wenn's nicht rockt, isses für'n Arsch",
 		"inhalt"			=> $inhalt
 		//"navigation"		=> create_Navigation($mysqli)
 );

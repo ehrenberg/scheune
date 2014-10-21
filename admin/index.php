@@ -59,8 +59,6 @@ if(isset($_GET['p'])) {
 	
 		$inhalt .= '</table>';
 	}
-} else {
-	$inhalt .= '<h2>Statistiken</h2><iframe src="http://rs013.glowfish.de/user/web307/awstats.php" style="border-sizing:border-box;width:100%;height:500px;"></iframe>';
 }
 
 ?>

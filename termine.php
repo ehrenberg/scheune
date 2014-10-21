@@ -60,7 +60,7 @@ $inhalt .= $tabelle_termine;
  */
 $Template	= new tpl("main.tpl");
 $sere = array (
-		"title"				=> "Der Schuppen - Termine",
+		"title"				=> "Rockscheune - Termine",
 		"inhalt"			=> $inhalt
 );
 
