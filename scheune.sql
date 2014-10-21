@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: 127.0.0.1
--- Erstellungszeit: 20. Okt 2014 um 23:01
+-- Erstellungszeit: 21. Okt 2014 um 22:54
 -- Server Version: 5.6.17
 -- PHP-Version: 5.5.12
 
@@ -29,18 +29,13 @@ SET time_zone = "+00:00";
 CREATE TABLE IF NOT EXISTS `abstimmung` (
   `ID` int(5) NOT NULL AUTO_INCREMENT,
   `Bezeichnung` varchar(100) NOT NULL,
-  `ErstelltAm` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `ErstelltAm` datetime NOT NULL,
   `GueltigBis` datetime DEFAULT NULL,
+  `Aktiv` tinyint(1) NOT NULL,
   PRIMARY KEY (`ID`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=4 ;
 
---
--- Daten für Tabelle `abstimmung`
---
 
-INSERT INTO `abstimmung` (`ID`, `Bezeichnung`, `ErstelltAm`, `GueltigBis`) VALUES
-(2, 'Wer ist der Beste?', '2014-10-20 20:15:46', '2014-10-24 00:00:00'),
-(3, 'Wer ist der Beste 2 ?', '2014-10-20 20:27:51', '2014-10-20 20:27:51');
 
 -- --------------------------------------------------------
 
@@ -58,15 +53,9 @@ CREATE TABLE IF NOT EXISTS `abstimmung_ip` (
   KEY `Titel_ID` (`Abstimmung_ID`),
   KEY `Abstimmung_ID` (`Abstimmung_ID`),
   KEY `Abstimmung_ID_2` (`Abstimmung_ID`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=20 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=22 ;
 
---
--- Daten für Tabelle `abstimmung_ip`
---
 
-INSERT INTO `abstimmung_ip` (`ID`, `Abstimmung_ID`, `IP`, `Pos`, `Neg`) VALUES
-(18, 2, '::1', 1, 0),
-(19, 2, '::1', 0, 1);
 
 -- --------------------------------------------------------
 
@@ -83,16 +72,21 @@ CREATE TABLE IF NOT EXISTS `abstimmung_titel` (
   KEY `Abstimmung_ID` (`Abstimmung_ID`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=82 ;
 
+
+-- --------------------------------------------------------
+
 --
--- Daten für Tabelle `abstimmung_titel`
+-- Tabellenstruktur für Tabelle `abstimmung_vorschlaege`
 --
 
-INSERT INTO `abstimmung_titel` (`ID`, `Abstimmung_ID`, `Stimmen`, `Name`) VALUES
-(77, 2, 0, 'Titel 1'),
-(78, 2, 19, 'Titel 2'),
-(79, 2, 0, 'Titel 3'),
-(80, 2, 0, 'Titel 4'),
-(81, 2, 0, 'Titel 5');
+CREATE TABLE IF NOT EXISTS `abstimmung_vorschlaege` (
+  `ID` int(11) NOT NULL AUTO_INCREMENT,
+  `Text` varchar(100) NOT NULL,
+  `IP` varchar(15) NOT NULL,
+  `ErstelltAm` datetime,
+  PRIMARY KEY (`ID`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=4 ;
+
 
 -- --------------------------------------------------------
 
@@ -112,22 +106,21 @@ CREATE TABLE IF NOT EXISTS `termine` (
 -- Daten für Tabelle `termine`
 --
 
+--
+-- Daten für Tabelle `termine`
+--
+
 INSERT INTO `termine` (`ID`, `Text`, `Von`, `Bis`) VALUES
-(69, 'Text 19.10.2014', '2014-10-19 21:30:00', '2014-10-19 23:30:00'),
-(68, 'Text 18.10.2014', '2014-10-18 20:00:00', '2014-10-18 22:00:00'),
-(67, 'Text 17.10.2014', '2014-10-17 21:00:00', '2014-10-17 22:30:00'),
-(66, 'Text 16.10.2014', '2014-10-16 22:00:00', '2014-10-16 23:00:00'),
-(65, 'Text 15.10.2014', '2014-10-15 18:00:00', '2014-10-15 23:00:00'),
-(64, 'Text 14.10.2014', '2014-10-14 19:00:00', '2014-10-14 22:00:00'),
-(63, 'Text 13.10.2014', '2014-10-13 20:30:00', '2014-10-13 21:30:00'),
-(62, 'Text 26.10.2014', '2014-10-26 23:00:00', '2014-10-27 03:00:00'),
-(61, 'Text 25.10.2014', '2014-10-25 18:00:00', '2014-10-25 22:00:00'),
-(60, 'Text 24.10.2014', '2014-10-24 23:00:00', '2014-10-25 00:00:00'),
-(59, 'Text 23.10.2014', '2014-10-23 19:00:00', '2014-10-23 23:00:00'),
-(58, 'Text 22.10.2014', '2014-10-22 20:00:00', '2014-10-22 22:00:00'),
-(57, 'Text 21.10.2014', '2014-10-21 21:00:00', '2014-10-21 23:00:00'),
-(56, 'Text 20.10.2014', '2014-10-20 20:30:00', '2014-10-20 21:00:00'),
-(70, 'Test Doppelt', '2014-10-23 08:00:00', '2014-10-23 10:00:00');
+(18, 'WunschHits inner Scheune - Hörer machen Programm', '2014-10-25 16:00:00', '2014-10-25 19:00:00'),
+(17, 'Rock in''s Wochenende mit Ivo', '2014-10-24 16:00:00', '2014-10-24 19:00:00'),
+(16, 'Day Of Classic Rock', '2014-10-23 09:00:00', '2014-10-23 19:00:00'),
+(15, 'WunschHits inner Scheune - Hörer machen Programm', '2014-10-22 16:00:00', '2014-10-22 19:00:00'),
+(14, 'Die BluesRock - Lounge mit Jin', '2014-10-21 20:00:00', '2014-10-21 22:00:00'),
+(13, 'Die Scheune im MorgenRock', '2014-10-20 09:00:00', '2014-10-20 11:00:00'),
+(19, 'Album der Woche  ( FAUN ), im Anschluß BON JOVI in Concert', '2014-10-26 19:00:00', '2014-10-26 22:00:00'),
+(20, 'DeutschRock - Nacht in der Scheune', '2014-10-22 21:00:00', '2014-10-23 00:00:00'),
+(21, 'RockScheune NachtSchicht (u.a. ab 23.oo Uhr A.R.PELL in Concert)', '2014-10-24 21:00:00', '2014-10-25 02:00:00'),
+(22, 'Die RockScheune FunNight mit Mich aund Ivo', '2014-10-25 22:00:00', '2014-10-26 03:00:00');
 
 --
 -- Constraints der exportierten Tabellen
