@@ -10,22 +10,17 @@ $canVotePos		= true;
 $canVoteNeg		= true;
 $canVoteBoth	= true;
 
-if (!isset($_SERVER['HTTP_X_FORWARDED_FOR'])) {
-	$client_ip = $_SERVER['REMOTE_ADDR'];
-} else {
-	$client_ip = $_SERVER['HTTP_X_FORWARDED_FOR'];
-}
-
 if(isset($_GET['add_vorschlag_ok']))$inhalt .= '<div class="alert-box notice">Danke für deinen Vorschlag!</div>';
 
 /*
  * Vorschlag POST
  */
 if(isset($_POST['add_vorschlag'])) {
-	$text = $_POST['vorschlag'];
+	$text	= $_POST['vorschlag'];
+	$name	= $_POST['name'];
 
 	//Vorschlag eintragen
-	$data = Array ("Text" => $text, "IP" => $client_ip);
+	$data = Array ("Text" => $text, "Name" => $name, "IP" => $client_ip);
 	$id = $db->insert(T_ABSTIMMUNG_VORSCHLAEGE, $data);
 	header("Location:toplist.php?add_vorschlag_ok");
 }
@@ -132,7 +127,8 @@ foreach($abstimmungen as $abstimmung) {
 		$inhalt .= 'Einem Titel kannst du deine Stimme geben. Einem anderen kannst du die Kugel verpassen.<br /><br />';
 		$inhalt .= '<h2>'.$abstimmung['Bezeichnung'].'</h2><h4>Bis: '.$gueltigBis->format('d.m.Y H:i').' Uhr</h4>';
 		
-		$cols		= array("ID", "Name", "Stimmen");
+		$cols		= array("ID", "Abstimmung_ID", "Name", "Stimmen");
+		$db->where("Abstimmung_ID", $abstimmung['ID']);
 		$db->orderBy("Stimmen","DESC");
 		$titeldaten	= $db->get(T_ABSTIMMUNG_TITEL, null, $cols);
 		
@@ -160,12 +156,26 @@ foreach($abstimmungen as $abstimmung) {
 		$inhalt .= '</table>';
 	}
 }
-	$inhalt .= '<form method="POST">
-					<br /><br />
-					<label>Hast du einen Vorschlag für einen geilen Titel? Dann schreib uns:</label><br /><br />
-					<input type="text" name="vorschlag" style="width:200px">
-					<input type="submit" name="add_vorschlag" value="Vorschlagen">
-				</form>';
+	$inhalt .= '<div class="add_vorschlag">
+				<form method="POST">
+				<table>
+				<tr>
+					<td colspan="2"><label>Hast du einen Vorschlag für einen geilen Titel? Dann schreib uns:</label></td>
+				</tr>
+				<tr>
+					<td>Name:</td>
+					<td><input type="text" name="name" style="width:100px"></td>
+				</tr>
+				<tr>
+					<td>Vorschlag:</td>
+					<td><input type="text" name="vorschlag" style="width:200px"></td>
+				</tr>
+				<tr>
+					<td colspan="2"><input type="submit" name="add_vorschlag" value="Vorschlagen" class="btn"></td>
+				</tr>
+				</table>
+				</form>
+				</div>';
 /*
  *	HAUPTGERÜST
  */
@@ -173,8 +183,6 @@ $Template	= new tpl("main.tpl");
 $sere = array (
 		"title"				=> "Rockscheune - Wenn's nicht rockt, isses für'n Arsch",
 		"inhalt"			=> $inhalt
-		//"navigation"		=> create_Navigation($mysqli)
 );
-
 echo $Template->fill_tpl("start", $sere);
 ?>

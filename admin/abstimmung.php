@@ -8,8 +8,9 @@ $inhalt = null;
  */
 if(isset($_POST['add'])) {
 	$Bezeichnung	= $_POST['bezeichnung'];
+	$GueltigBis		= date('Y-m-d H:i:s',strtotime($_POST['gueltigbis_date'].' '.$_POST['gueltigbis_time']));
 	
-	$data = Array ("Bezeichnung"	=> $Bezeichnung);
+	$data = Array ("Bezeichnung"	=> $Bezeichnung, "ErstelltAm" => date('Y-m-d H:i:s',time()), "GueltigBis" => $GueltigBis);
 	$id = $db->insert(T_ABSTIMMUNG, $data);
 	if($id)header("Location:index.php?p=toplist");
 	else echo $db->getLastError();
@@ -39,7 +40,7 @@ if(isset($_POST['add_titel'])) {
 if(isset($_POST['edit'])) {
 	$ID				= $_POST['id'];
 	$Bezeichnung	= $_POST['bezeichnung'];
-	$GueltigBis		= $_POST['gueltigbis'];
+	$GueltigBis		= date('Y-m-d H:i:s',strtotime($_POST['gueltigbis_date'].' '.$_POST['gueltigbis_time']));
 	if(isset($_POST['Aktiv']))$Aktiv			= $_POST['Aktiv'];
 	else $Aktiv = false;
 	
@@ -51,7 +52,7 @@ if(isset($_POST['edit'])) {
 		'Aktiv'			=> $Aktiv
 	);
 	$db->where('ID', $ID);
-	if ($db->update(T_ABSTIMMUNG, $data))echo 'Der Eintrag wurde erfolgreich bearbeitet!';
+	if ($db->update(T_ABSTIMMUNG, $data)) $inhalt .= '<div class="alert-box success">Der Eintrag wurde erfolgreich bearbeitet</div>';
 	else echo 'update failed: ' . $db->getLastError();
 }
 /*
@@ -67,7 +68,7 @@ if(isset($_POST['edit_titel'])) {
 		'Stimmen'	=> $Stimmen
 	);
 	$db->where('ID', $ID);
-	if ($db->update(T_ABSTIMMUNG_TITEL, $data))echo 'Der Eintrag wurde erfolgreich bearbeitet!';
+	if ($db->update(T_ABSTIMMUNG_TITEL, $data)) $inhalt .= '<div class="alert-box success">Der Eintrag wurde erfolgreich bearbeitet</div>';
 	else echo 'update failed: ' . $db->getLastError();
 }
 /*
@@ -77,7 +78,7 @@ if(isset($_POST['delete'])) {
 	$ID		= $_POST['id'];
 
 	$db->where('ID', $ID);
-	if($db->delete(T_ABSTIMMUNG)) echo 'Erfolgreich gelöscht';
+	if($db->delete(T_ABSTIMMUNG)) $inhalt .= '<div class="alert-box success">Erfolgreich gelöscht</div>';
 }
 /*
  * POST Titel löschen
@@ -86,7 +87,7 @@ if(isset($_POST['delete_titel'])) {
 	$ID		= $_POST['id'];
 
 	$db->where('ID', $ID);
-	if($db->delete(T_ABSTIMMUNG_TITEL)) echo 'Erfolgreich gelöscht';
+	if($db->delete(T_ABSTIMMUNG_TITEL)) $inhalt .= '<div class="alert-box success">Erfolgreich gelöscht</div>';
 }
 
 
@@ -95,9 +96,10 @@ if(isset($_POST['delete_titel'])) {
 if(isset($_GET['delete'])) {
 	$ID = $_GET['delete'];
 	
-	$inhalt .= '<form method="POST" action="index.php?p=toplist">
+	$inhalt .= '<form method="POST" action="abstimmung.php">
 		<input type="hidden" name="id" value="'.$ID.'">
-		<input type="submit" name="delete" value="Wirklich löschen">
+		<input type="submit" name="delete" value="Ja Wirklich löschen" class="btn">
+		<input type="submit" formaction="abstimmung.php" value="Doch nicht!" class="btn">
 	</form>';
 }
 //Formular: Titel löschen
@@ -122,12 +124,21 @@ else if(isset($_GET['edit'])) {
 	foreach ($abstimmungen as $abstimmung) {
 		if($abstimmung['Aktiv'] == 1)$checked = 'checked';
 		else $checked = '';
+		
+		$gueltigbis_date = date('d.m.Y', strtotime($abstimmung['GueltigBis']));
+		$gueltigbis_time = date('H:i', strtotime($abstimmung['GueltigBis']));
+		
 		$inhalt .= '<form method="POST" action="abstimmung.php"><input type="submit" name="back" value="Zurück"></form>
 		<br />
 		<form method="POST">
-			<input type="text" name="bezeichnung" value="'.$abstimmung['Bezeichnung'].'" size="50"><br />
-			<input type="text" name="gueltigbis" value="'.$abstimmung['GueltigBis'].'" size="50"><br />
-			<input type="checkbox" name="Aktiv" '.$checked.'><br />
+			<label for="bezeichnung">Bezeichnung: </label>
+			<input type="text" name="bezeichnung" id="bezeichnung" value="'.$abstimmung['Bezeichnung'].'" size="40"><br />
+			
+			<label for="gueltigbis_date">Gültig Bis: </label>
+			<input type="text" name="gueltigbis_date" value="'.$gueltigbis_date.'" class="tcal" size="10">
+			<input type="text" name="gueltigbis_time" value="'.$gueltigbis_time.'" size="5"> Uhr<br />
+			
+			<label for="aktiv">Aktiv: </label><input type="checkbox" name="Aktiv" id="aktiv" '.$checked.'><br />
 		<input type="hidden" name="id" value="'.$abstimmung['ID'].'">
 		<br/>
 		<input type="submit" name="edit" value="Speichern">
@@ -158,8 +169,12 @@ else if(isset($_GET['add'])) {
 	$inhalt .= '<form method="POST" action="abstimmung.php">
 	<table>
 		<tr>
-			<td>Name</td>
-			<td><input type="text" name="bezeichnung"></td>
+			<td>Name:</td>
+			<td><input type="text" name="bezeichnung" size="30"></td>
+		</tr>
+		<tr>
+			<td>Gültig Bis:</td>
+			<td><input type="text" name="gueltigbis_date" class="tcal" size="10"><input type="text" name="gueltigbis_time" size="4"> Uhr (Format:00:00)</td>
 		</tr>
 		<tr>
 			<td colspan="2"><input type="submit" name="add" value="Speichern"></td>
@@ -175,15 +190,15 @@ else if(isset($_GET['add_titel'])) {
 	$count	= $_GET['count'];
 
 	$inhalt .= '<form method="POST" action="abstimmung.php">
-	<table>
+	<table class="standard">
 		<thead>
 			<th>Name</th>
-			<th>Stimmen</th>
+			<th width="10%">Stimmen</th>
 		</thead>';
 	for($i = 0;$i < $count;$i++) {
 		$inhalt .= '<tr>
-			<td><input type="text" name="titel[]"></td>
-			<td><input type="text" name="stimmen[]" size="4" value="0"></td>
+			<td><input type="text" name="titel[]" style="width:100%"></td>
+			<td><input type="text" name="stimmen[]" value="0" style="width:100%"></td>
 		</tr>';
 	}
 		
@@ -213,15 +228,15 @@ else if(isset($_GET['id'])) {
 						<input type="hidden" name="add_titel" value="">
 						<input type="hidden" name="aid" value="'.$abstimmung['ID'].'">
 						
-						Anzahl:<input type="text" name="count" size="4">
+						Anzahl Titel:<input type="text" name="count" size="4">
 						
-						<input type="submit" value="Titel hinzufügen">
+						<input type="submit" value="hinzufügen" class="btn">
 					</form>
 					<table class="standard">
 						<thead>
 							<th>Name</th>
-							<th>Stimmen</th>
-							<th>Abstimmung</th>
+							<th width="11%">Stimmen</th>
+							<th width="30%">Abstimmung</th>
 							<th></th>
 						</thead>';
 		foreach ($titeldaten as $titel) {
@@ -254,9 +269,9 @@ else if(isset($_GET['id'])) {
 		$link = 'abstimmung.php?id='.$abstimmung['ID'].'';
 	
 		$inhalt .= '<tr>
-			<td><a href="'.$link.'">'.$abstimmung['Bezeichnung'].'</a></td>
-			<td>'.date('d.m.Y H:i', strtotime($abstimmung['ErstelltAm'])).' Uhr</td>
-			<td>'.date('d.m.Y H:i', strtotime($abstimmung['GueltigBis'])).' Uhr</td>
+			<td><a class="link" href="'.$link.'">'.$abstimmung['Bezeichnung'].'</a></td>
+			<td><a class="link" href="'.$link.'">'.date('d.m.Y H:i', strtotime($abstimmung['ErstelltAm'])).' Uhr</a></td>
+			<td><a class="link" href="'.$link.'">'.date('d.m.Y H:i', strtotime($abstimmung['GueltigBis'])).' Uhr</a></td>
 			<td>
 				<a href="abstimmung.php?edit='.$abstimmung['ID'].'"><img src="img/edit.png"></a>
 				<a href="abstimmung.php?delete='.$abstimmung['ID'].'"><img src="img/delete.png"></a>
@@ -269,10 +284,14 @@ else if(isset($_GET['id'])) {
 <html>
 <head>
 	<link rel="stylesheet" type="text/css" href="style.css">
+	<link rel="stylesheet" href="../css/tcal.css">
+	<script type="text/javascript" src="../js/simpletcal.js"></script>
 </head>
 <body>
 	<div id="container">
-		<h1>Administratorbereich</h1>
+		<div id="header">
+			<h1>Administratorbereich</h1>
+		</div>
 		<div id="navi">
 			<ul>
 				<li><a href="../">Zurück zur Webseite</a></li>
@@ -280,6 +299,7 @@ else if(isset($_GET['id'])) {
 				<li><a href="index.php?p=termine">Terminkalendar</a></li>
 				<li><a href="abstimmung.php">Abstimmungen</a></li>
 				<li><a href="vorschlaege.php">Abstimmungen - Vorschläge</a></li>
+				<li><a href="templates.php">Templates</a></li>
 			</ul>
 		</div>
 		<div id="content">

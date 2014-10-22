@@ -15,10 +15,8 @@ $inhalt		= $Template->fill_tpl("start", $sere);
  */
 $Template	= new tpl("main.tpl");
 $sere = array (
-		"title"				=> "Radio Rockscheune - Impressum",
+		"title"				=> "Rockscheune - Impressum",
 		"inhalt"			=> $inhalt
-		//"navigation"		=> create_Navigation($mysqli)
 );
-
 echo $Template->fill_tpl("start", $sere);
 ?>

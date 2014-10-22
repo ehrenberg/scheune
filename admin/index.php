@@ -59,16 +59,30 @@ if(isset($_GET['p'])) {
 	
 		$inhalt .= '</table>';
 	}
+} else {
+	$inhalt .= '<div class="box_overview">
+					<span class="title">Termine</span>
+					<a class="btn" href="index.php?p=termine&typ=woche">Aktuelle Woche anzeigen</a>
+					<a class="btn" href="termin.php?add=week">Neue Termine eintragen</a>
+				</div>
+				<div class="box_overview">
+					<span class="title">Abstimmungen</span>
+					<a class="btn" href="abstimmung.php?add">Neue Abstimmung erstellen</a>
+				</div>';
 }
 
 ?>
 <html>
 <head>
 	<link rel="stylesheet" type="text/css" href="style.css">
+	<link rel="stylesheet" href="../css/tcal.css">
+	<script type="text/javascript" src="../js/simpletcal.js"></script>
 </head>
 <body>
 	<div id="container">
-		<h1>Administratorbereich</h1>
+		<div id="header">
+			<h1>Administratorbereich</h1>
+		</div>
 		<div id="navi">
 			<ul>
 				<li><a href="../">Zurück zur Webseite</a></li>
@@ -76,6 +90,7 @@ if(isset($_GET['p'])) {
 				<li><a href="index.php?p=termine">Terminkalendar</a></li>
 				<li><a href="abstimmung.php">Abstimmungen</a></li>
 				<li><a href="vorschlaege.php">Abstimmungen - Vorschläge</a></li>
+				<li><a href="templates.php">Templates</a></li>
 			</ul>
 		</div>
 		<div id="content">

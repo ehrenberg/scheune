@@ -10,7 +10,7 @@ Dem geilsten RockRadio in Niedersachsen ^^
 <br/>
 100 % Musik und Fun auf die Lauschlappen.
 <br/>
-( Programm-/Konzerte-Infos auch immer aktuell bei <a target="_blank" href="http://spin.de">spin.de</a>,  Skype und <a target="_blank" href="https://www.facebook.com/pages/Radio-RockScheune">Facebook</a>. Radio RockScheune )
+( Programm-/Konzerte-Infos auch immer aktuell bei <a target="_blank" href="http://spin.de">spin.de</a>,  Skype und <a target="_blank" href="https://www.facebook.com/pages/Radio-RockScheune/513412038789738">Facebook</a>. Radio RockScheune )
 <br/>
 <br/>
 <br/>

@@ -8,7 +8,7 @@ class tpl {
 
     function tpl($tplurl) {
         $this->tpl = array();
-        $line_arr = file("templates/".$tplurl);
+        $line_arr = file($_SERVER['DOCUMENT_ROOT']."scheune/templates/".$tplurl);
         $aktindex = ""; //Index am Anfang leer
         foreach ($line_arr as $line) {
             $templine = trim($line);
@@ -31,6 +31,61 @@ class tpl {
         }
     }
 
+	/*
+	 * Save Template
+	 */
+	function save_tpl($name, $new) {
+		$on			= false;
+		
+		$line_arr	= file($_SERVER['DOCUMENT_ROOT']."scheune/templates/".$name);
+		$line_count	= count($line_arr);
+		$new_arr	= preg_split("/\r\n|\n|\r/", $new); //Text zu Array
+		array_unshift($new_arr, "[start]\n\r");
+		$new_count	= count($new_arr);
+		
+		//Zeilenumbrüche entfernen
+		for($a=0;$a<$new_count;$a++) {
+			$new_arr[$a] = trim($new_arr[$a]);
+		}
+		for($b=0;$b<$line_count;$b++) {
+			$line_arr[$b] = trim($line_arr[$b]);
+		}
+
+		//Zeilen löschen
+        for($i = 0;$i < $line_count;$i++) {
+            $templine	= $line_arr[$i];
+            $first		= substr($templine, 0, 1);
+			$last		= substr($templine, -1);
+			
+			//Wenn anderer Bereich
+			if ($first == '[' AND $last == ']') {
+				//Wenn [start]
+				if ($templine == '[start]') {
+					$on = true;
+				} else {
+					$on = false;
+				}
+			}
+			//Wenn in [start] lösche Zeile
+			if($on == true) {
+				unset($line_arr[$i]);
+            }
+        }
+		//Arrays zusammenführen
+		$line_arr	= array_merge($new_arr, $line_arr);
+		//Datei neu schreiben
+		$fp			= fopen($_SERVER['DOCUMENT_ROOT']."scheune/templates/".$name, 'w');
+		foreach($line_arr as $line) {
+			fputs($fp, $line.PHP_EOL);
+		}
+		fclose($fp);
+		
+		//Template neu laden
+		$this->tpl($name);
+		
+		return true;
+    }
+	
     function fill_tpl($name, $se, $re = "", $cmd = true) {
 		//Übergabe von zwei Scalaren. Werden einfach in eine Array-Struktur
 		//gebracht, um die nächstfolgende Bedingung zu erfüllen

@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: 127.0.0.1
--- Erstellungszeit: 21. Okt 2014 um 22:54
+-- Erstellungszeit: 22. Okt 2014 um 16:45
 -- Server Version: 5.6.17
 -- PHP-Version: 5.5.12
 
@@ -33,9 +33,15 @@ CREATE TABLE IF NOT EXISTS `abstimmung` (
   `GueltigBis` datetime DEFAULT NULL,
   `Aktiv` tinyint(1) NOT NULL,
   PRIMARY KEY (`ID`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=4 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=7 ;
 
+--
+-- Daten für Tabelle `abstimmung`
+--
 
+INSERT INTO `abstimmung` (`ID`, `Bezeichnung`, `ErstelltAm`, `GueltigBis`, `Aktiv`) VALUES
+(4, 'Test', '0000-00-00 00:00:00', '2014-10-22 15:00:00', 1),
+(6, 'Test 2', '2014-10-22 12:04:13', '2014-10-31 15:00:00', 0);
 
 -- --------------------------------------------------------
 
@@ -55,8 +61,6 @@ CREATE TABLE IF NOT EXISTS `abstimmung_ip` (
   KEY `Abstimmung_ID_2` (`Abstimmung_ID`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=22 ;
 
-
-
 -- --------------------------------------------------------
 
 --
@@ -70,8 +74,14 @@ CREATE TABLE IF NOT EXISTS `abstimmung_titel` (
   `Name` varchar(150) NOT NULL,
   PRIMARY KEY (`ID`),
   KEY `Abstimmung_ID` (`Abstimmung_ID`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=82 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=85 ;
 
+--
+-- Daten für Tabelle `abstimmung_titel`
+--
+
+INSERT INTO `abstimmung_titel` (`ID`, `Abstimmung_ID`, `Stimmen`, `Name`) VALUES
+(84, 6, 100, 'Vorschlag 1');
 
 -- --------------------------------------------------------
 
@@ -82,11 +92,40 @@ CREATE TABLE IF NOT EXISTS `abstimmung_titel` (
 CREATE TABLE IF NOT EXISTS `abstimmung_vorschlaege` (
   `ID` int(11) NOT NULL AUTO_INCREMENT,
   `Text` varchar(100) NOT NULL,
+  `Name` varchar(100) DEFAULT NULL,
   `IP` varchar(15) NOT NULL,
-  `ErstelltAm` datetime,
+  `ErstelltAm` datetime DEFAULT NULL,
+  PRIMARY KEY (`ID`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=12 ;
+
+--
+-- Daten für Tabelle `abstimmung_vorschlaege`
+--
+
+INSERT INTO `abstimmung_vorschlaege` (`ID`, `Text`, `Name`, `IP`, `ErstelltAm`) VALUES
+(11, 'Vorschlag 1', NULL, '127.0.0.1', NULL);
+
+-- --------------------------------------------------------
+
+--
+-- Tabellenstruktur für Tabelle `templates`
+--
+
+CREATE TABLE IF NOT EXISTS `templates` (
+  `ID` int(5) NOT NULL AUTO_INCREMENT,
+  `FileName` varchar(100) NOT NULL,
+  `Name` varchar(50) NOT NULL,
   PRIMARY KEY (`ID`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=4 ;
 
+--
+-- Daten für Tabelle `templates`
+--
+
+INSERT INTO `templates` (`ID`, `FileName`, `Name`) VALUES
+(1, 'impressum.tpl', 'impressum'),
+(2, 'info.tpl', 'info'),
+(3, 'start.tpl', 'start');
 
 -- --------------------------------------------------------
 
@@ -101,10 +140,6 @@ CREATE TABLE IF NOT EXISTS `termine` (
   `Bis` datetime NOT NULL,
   PRIMARY KEY (`ID`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=latin1 COLLATE=latin1_general_ci AUTO_INCREMENT=71 ;
-
---
--- Daten für Tabelle `termine`
---
 
 --
 -- Daten für Tabelle `termine`

@@ -62,9 +62,8 @@ $inhalt		= $Template->fill_tpl("start", $sere);
  */
 $Template	= new tpl("main.tpl");
 $sere = array (
-		"title"				=> "Radio Rockscheune - Kontakt",
+		"title"				=> "Rockscheune - Kontakt",
 		"inhalt"			=> $inhalt
 );
-
 echo $Template->fill_tpl("start", $sere);
 ?>

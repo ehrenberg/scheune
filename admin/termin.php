@@ -147,10 +147,14 @@ if(isset($_GET['add']) == 'week') {
 <html>
 <head>
 	<link rel="stylesheet" type="text/css" href="style.css">
+	<link rel="stylesheet" href="../css/tcal.css">
+	<script type="text/javascript" src="../js/simpletcal.js"></script>
 </head>
 <body>
 	<div id="container">
-		<h1>Administratorbereich</h1>
+		<div id="header">
+			<h1>Administratorbereich</h1>
+		</div>
 		<div id="navi">
 			<ul>
 				<li><a href="../">Zurück zur Webseite</a></li>
@@ -158,6 +162,7 @@ if(isset($_GET['add']) == 'week') {
 				<li><a href="index.php?p=termine">Terminkalendar</a></li>
 				<li><a href="abstimmung.php">Abstimmungen</a></li>
 				<li><a href="vorschlaege.php">Abstimmungen - Vorschläge</a></li>
+				<li><a href="templates.php">Templates</a></li>
 			</ul>
 		</div>
 		<div id="content">

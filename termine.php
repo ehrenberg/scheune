@@ -63,6 +63,5 @@ $sere = array (
 		"title"				=> "Rockscheune - Termine",
 		"inhalt"			=> $inhalt
 );
-
 echo $Template->fill_tpl("start", $sere);
 ?>
