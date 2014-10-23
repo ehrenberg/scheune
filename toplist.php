@@ -98,11 +98,12 @@ if(isset($_GET['aid'])) {
  * Tabelle erstellen
  */
 $cols		= array("ID", "Bezeichnung", "GueltigBis", "Aktiv");
+$db->where("GueltigBis", date('Y-m-d H:i:s',time()), '>=');
+$db->where("Aktiv",true);
 $abstimmungen	= $db->get(T_ABSTIMMUNG, null, $cols);
-
+if($db->count == 0) $inhalt .= '<div class="alert-box notice">Die letzte Abstimmung ist beendet..</div>';
 foreach($abstimmungen as $abstimmung) {
 	$gueltigBis = new DateTime($abstimmung['GueltigBis']);
-	$aktiv		= $abstimmung['Aktiv'];
 	
 	$cols		= array("ID", "IP", "Pos", "Neg");
 	$db->where("Abstimmung_ID", $abstimmung['ID']);
@@ -122,67 +123,71 @@ foreach($abstimmungen as $abstimmung) {
 			
 		}
 	}
-	
-	if($aktiv == true) {
-		$inhalt .= 'Einem Titel kannst du deine Stimme geben. Einem anderen kannst du die Kugel verpassen.<br /><br />';
-		$inhalt .= '<h2>'.$abstimmung['Bezeichnung'].'</h2><h4>Bis: '.$gueltigBis->format('d.m.Y H:i').' Uhr</h4>';
-		
-		$cols		= array("ID", "Abstimmung_ID", "Name", "Stimmen");
-		$db->where("Abstimmung_ID", $abstimmung['ID']);
-		$db->orderBy("Stimmen","DESC");
-		$titeldaten	= $db->get(T_ABSTIMMUNG_TITEL, null, $cols);
-		
-		$inhalt .= '<table class="termine">
-					<thead>
-						<th>Titel</th>
-						<th width="10%">Stimmen</th>
-						<th width="20%">Bewerten</th>
-					</thead>';
-		foreach($titeldaten as $titel) {
 
-			$inhalt .= '<tr>
-							<td>'.$titel['Name'].'</td>
-							<td>'.$titel['Stimmen'].'</td>
-							<td width="15%">';
-								if($canVotePos) {
-									$inhalt .= '<a class="btnVote" href="toplist.php?aid='.$abstimmung['ID'].'&vote_pos='.$titel['ID'].'">Geil !</a>';
-								}
-								if($canVoteNeg) {
-									$inhalt .= '<a class="btnVote" href="toplist.php?aid='.$abstimmung['ID'].'&vote_neg='.$titel['ID'].'">Nö !</a>';
-								}
-							$inhalt .= '</td>
-						</tr>';
-		}
-		$inhalt .= '</table>';
+	$inhalt .= 'Einem Titel kannst du deine Stimme geben. Einem anderen kannst du die Kugel verpassen.<br /><br />';
+	$inhalt .= '<h2>'.$abstimmung['Bezeichnung'].'</h2><h4>Bis: '.$gueltigBis->format('d.m.Y H:i').' Uhr</h4>';
+	
+	$cols		= array("ID", "Abstimmung_ID", "Name", "Stimmen");
+	$db->where("Abstimmung_ID", $abstimmung['ID']);
+	$db->orderBy("Stimmen","DESC");
+	$titeldaten	= $db->get(T_ABSTIMMUNG_TITEL, null, $cols);
+	
+	$inhalt .= '<table class="termine">
+				<thead>
+					<th>Titel</th>
+					<th width="10%">Stimmen</th>
+					<th width="20%">Bewerten</th>
+				</thead>';
+	foreach($titeldaten as $titel) {
+
+		$inhalt .= '<tr>
+						<td>'.$titel['Name'].'</td>
+						<td>'.$titel['Stimmen'].'</td>
+						<td width="15%">';
+							if($canVotePos) {
+								$inhalt .= '<a class="btnVote" href="toplist.php?aid='.$abstimmung['ID'].'&vote_pos='.$titel['ID'].'">Geil !</a>';
+							}
+							if($canVoteNeg) {
+								$inhalt .= '<a class="btnVote" href="toplist.php?aid='.$abstimmung['ID'].'&vote_neg='.$titel['ID'].'">Nö !</a>';
+							}
+						$inhalt .= '</td>
+					</tr>';
 	}
+	$inhalt .= '</table>';
 }
-	$inhalt .= '<div class="add_vorschlag">
+
+/*
+ * Formular: Vorschlag hinzufügen
+ */
+$inhalt .= '<div class="add_vorschlag">
 				<form method="POST">
-				<table>
-				<tr>
-					<td colspan="2"><label>Hast du einen Vorschlag für einen geilen Titel? Dann schreib uns:</label></td>
-				</tr>
-				<tr>
-					<td>Name:</td>
-					<td><input type="text" name="name" style="width:100px"></td>
-				</tr>
-				<tr>
-					<td>Vorschlag:</td>
-					<td><input type="text" name="vorschlag" style="width:200px"></td>
-				</tr>
-				<tr>
-					<td colspan="2"><input type="submit" name="add_vorschlag" value="Vorschlagen" class="btn"></td>
-				</tr>
-				</table>
+					<table>
+						<tr>
+							<td colspan="2">Hast du einen Vorschlag für einen geilen Titel? Dann schreib uns:<br/><br/></td>
+						</tr>
+						<tr>
+							<td>Name:</td>
+							<td><input type="text" name="name" style="width:100px"></td>
+						</tr>
+						<tr>
+							<td>Vorschlag:</td>
+							<td><input type="text" name="vorschlag" style="width:200px"></td>
+						</tr>
+						<tr>
+							<td></td>
+							<td><input type="submit" name="add_vorschlag" value="Vorschlagen" class="btn"></td>
+						</tr>
+					</table>
 				</form>
-				</div>';
+			</div>';
 /*
  *	HAUPTGERÜST
  */
 $Template	= new tpl("main.tpl");
 $sere = array (
 		"title"				=> "Rockscheune - Wenn's nicht rockt, isses für'n Arsch",
-		"inhalt"			=> $inhalt
+		"inhalt"			=> $inhalt,
+		"playerText"		=> $settings['playerText']
 );
 echo $Template->fill_tpl("start", $sere);
 ?>

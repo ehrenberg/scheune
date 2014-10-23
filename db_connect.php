@@ -13,6 +13,10 @@ if (!isset($_SERVER['HTTP_X_FORWARDED_FOR'])) {
 	$client_ip = $_SERVER['HTTP_X_FORWARDED_FOR'];
 }
 
+//Settings laden
+$cols		= array("playerText");
+$settings	= $db->getOne(T_SETTINGS, null, $cols);
+
 /*
  *	FUNCTIONS
  */

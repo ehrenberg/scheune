@@ -1,0 +1,170 @@
+---
+id: "Control.ColorPicker"
+parent_id: "Control"
+type: class
+line_number: 16
+description: |
+  Transforms an ordinary input textbox into an interactive color chooser,
+  allowing the user to select a color from a swatch palette.
+  
+  Control ID: `colorpicker`
+  
+  Features:
+  
+  * Allows saving custom colors to the palette for later use
+  * Customizable by CSS
+
+file: ./src/colorpicker/colorpicker.js
+
+---
+id: "new Control.ColorPicker"
+parent_id: "Control.ColorPicker"
+type: constructor
+line_number: 32
+description: |
+  Create a new color picker from the given `<input type="text">`
+  element.
+  
+  Additional options:
+  
+  * className: The CSS class to apply to the dialog panel.
+  * colors: An array of 40 colors to display in the picker.
+  * addLabel: The label for the "Add" button (for internationalization).
+
+signatures:
+ -
+  signature: "new Control.ColorPicker(element[, options])"
+arguments:
+ -
+  name: element
+  types: [String, Element]
+  description: >
+    A `<input type="text">` element (or DOM ID).
+
+ -
+  name: options
+  types: [Hash]
+  description: >
+    Additional options for the control.
+
+file: ./src/colorpicker/colorpicker.js
+
+---
+id: "Control.ColorPicker#element"
+parent_id: "Control.ColorPicker"
+type: instance property
+line_number: 39
+description: |
+  The underlying `<input>` element passed to the constructor.
+
+signatures:
+ -
+  signature: "Control.ColorPicker#element"
+  return_value: "Element"
+file: ./src/colorpicker/colorpicker.js
+
+---
+id: "Control.ColorPicker#destroy"
+parent_id: "Control.ColorPicker"
+type: instance method
+line_number: 115
+description: |
+  Destroy this control and return the underlying element to
+  its original behavior.
+
+signatures:
+ -
+  signature: "Control.ColorPicker#destroy()"
+  return_value: "null"
+file: ./src/colorpicker/colorpicker.js
+
+---
+id: "Control.ColorPicker#toggle"
+parent_id: "Control.ColorPicker"
+type: instance method
+line_number: 141
+description: |
+  Toggle the visibility of the picker panel for this control.
+
+signatures:
+ -
+  signature: "Control.ColorPicker#toggle()"
+  return_value: "null"
+file: ./src/colorpicker/colorpicker.js
+
+---
+id: "Control.ColorPicker#show"
+parent_id: "Control.ColorPicker"
+type: instance method
+line_number: 151
+description: |
+  Show the picker panel for this control.
+
+signatures:
+ -
+  signature: "Control.ColorPicker#show()"
+  return_value: "null"
+file: ./src/colorpicker/colorpicker.js
+
+---
+id: "Control.ColorPicker#hide"
+parent_id: "Control.ColorPicker"
+type: instance method
+line_number: 171
+description: |
+  Hide the picker panel for this control.
+
+signatures:
+ -
+  signature: "Control.ColorPicker#hide()"
+  return_value: "null"
+file: ./src/colorpicker/colorpicker.js
+
+---
+id: "Control.ColorPicker.Panel"
+parent_id: "Control.ColorPicker"
+type: class
+line_number: 195
+description: |
+  The dialog panel that is displayed when the color picker is opened.
+
+file: ./src/colorpicker/colorpicker.js
+
+---
+id: "new Control.ColorPicker.Panel"
+parent_id: "Control.ColorPicker.Panel"
+type: constructor
+line_number: 208
+description: |
+  Create a new color picker panel.
+  
+  Additional options:
+  
+  * colors: An array of 40 colors to display in the picker.
+  * addLabel: The label for the "Add" button (for internationalization).
+
+signatures:
+ -
+  signature: "new Control.ColorPicker.Panel([options])"
+arguments:
+ -
+  name: options
+  types: [Hash]
+  description: >
+    Additional options for the panel.
+
+file: ./src/colorpicker/colorpicker.js
+
+---
+id: "Control.ColorPicker.Panel#element"
+parent_id: "Control.ColorPicker.Panel"
+type: instance property
+line_number: 227
+description: |
+  The root Element of this dialog panel.
+
+signatures:
+ -
+  signature: "Control.ColorPicker.Panel#element"
+  return_value: "Element"
+file: ./src/colorpicker/colorpicker.js

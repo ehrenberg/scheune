@@ -63,7 +63,8 @@ $inhalt		= $Template->fill_tpl("start", $sere);
 $Template	= new tpl("main.tpl");
 $sere = array (
 		"title"				=> "Rockscheune - Kontakt",
-		"inhalt"			=> $inhalt
+		"inhalt"			=> $inhalt,
+		"playerText"		=> $settings['playerText']
 );
 echo $Template->fill_tpl("start", $sere);
 ?>

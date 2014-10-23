@@ -34,13 +34,13 @@ class tpl {
 	/*
 	 * Save Template
 	 */
-	function save_tpl($name, $new) {
+	function save_tpl($name,$tag, $new) {
 		$on			= false;
 		
 		$line_arr	= file($_SERVER['DOCUMENT_ROOT']."scheune/templates/".$name);
 		$line_count	= count($line_arr);
 		$new_arr	= preg_split("/\r\n|\n|\r/", $new); //Text zu Array
-		array_unshift($new_arr, "[start]\n\r");
+		array_unshift($new_arr, "[".$tag."]\n\r");
 		$new_count	= count($new_arr);
 		
 		//Zeilenumbrüche entfernen
@@ -60,7 +60,7 @@ class tpl {
 			//Wenn anderer Bereich
 			if ($first == '[' AND $last == ']') {
 				//Wenn [start]
-				if ($templine == '[start]') {
+				if ($templine == '['.$tag.']') {
 					$on = true;
 				} else {
 					$on = false;

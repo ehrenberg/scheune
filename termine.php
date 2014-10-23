@@ -61,7 +61,8 @@ $inhalt .= $tabelle_termine;
 $Template	= new tpl("main.tpl");
 $sere = array (
 		"title"				=> "Rockscheune - Termine",
-		"inhalt"			=> $inhalt
+		"inhalt"			=> $inhalt,
+		"playerText"		=> $settings['playerText']
 );
 echo $Template->fill_tpl("start", $sere);
 ?>

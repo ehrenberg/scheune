@@ -37,24 +37,27 @@ div#header {
 div#header div#status {
 	border:0px;
 	position:relative;
-	right:0px;
-	top:2px;
-	width:140px;
+	right:12px;
+	top:5px;
 	float:right;
 }
 div#header div#status iframe.playerstatus {
-	height:140px;
+	height:100px;
 	width:135px;
-	border:0px;
+	border:3px solid #303030;
+	-webkit-border-radius: 10px;
+	-moz-border-radius: 10px;
+	border-radius: 10px;
 	overflow:hidden;
 }
 div#header div#player {
 	position:relative;
 	right:20px;
-	top:90px;
-	width:130px;
+	top:130px;
+	width:160px;
 	float:right;
 	text-align:center;
+	padding:5px;
 	font-size:14px;
 	-webkit-box-shadow: 0px 0px 30px 0px rgba(255, 255, 255, 0.75);
 	-moz-box-shadow:    0px 0px 30px 0px rgba(255, 255, 255, 0.75);
@@ -103,7 +106,7 @@ div#navigation li:hover {
 div#content {
 	width:auto;
 	min-height:300px;
-	padding:10px;
+	padding:7px;
 	border-top:2px solid #CCC;
 	border-bottom:2px solid #CCC;
 }
@@ -230,6 +233,10 @@ a.btn-selected {
     color: #fff;
 }
 
+div.add_vorschlag {
+	margin-top:20px;
+}
+
 /*
  *	FUßBEREICH
  */
@@ -243,4 +250,8 @@ div#footer ul {
 }
 div#footer ul li {
 	float:left;
+}
+div#footer span.right {
+	float:right;
+	margin-right:10px;
 }

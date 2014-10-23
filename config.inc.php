@@ -19,6 +19,7 @@ define("T_ABSTIMMUNG_TITEL","abstimmung_titel");
 define("T_ABSTIMMUNG_IP","abstimmung_ip");
 define("T_ABSTIMMUNG_VORSCHLAEGE","abstimmung_vorschlaege");
 define("T_TEMPLATES","templates");
+define("T_SETTINGS","settings");
 
 //Ordner
 define("DIR_ROOT", "/");

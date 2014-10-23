@@ -53,30 +53,38 @@ else if(isset($_POST['do'])) {
 		
 		$inhalt .= '<form method="POST" action="vorschlaege.php">
 					<table class="standard">
-						<thead>
-							<th>Name</th>
-							<th>Stimmen</th>
-						</thead>
 						<tr>
-							<td colspan="2"><label for="text_abstimmung">Name Abstimmung: </label><input type="text" name="text_abstimmung" id="text_abstimmung" style="width:100px"></td>
+							<td>
+								Name Abstimmung:
+							</td>
+							<td>
+								<input type="text" name="text_abstimmung" id="text_abstimmung" style="width:100px">
+							</td>
 						</tr>
 						<tr>
-							<td colspan="2">
+							<td>
 								<label for="gueltig_bis_date">Gültig Bis: </label>
-								<input type="text" name="gueltig_bis_date" id="gueltig_bis_date" style="width:100px" class="tcal" value="'.date('d.m.Y',time()).'">
-								<input type="text" name="gueltig_bis_time" id="gueltig_bis_time" size="4" value="00:00"> Uhr (Format: 00:00)
 							</td>
-						</tr>';
+							<td>
+								<input type="text" name="gueltig_bis" class="datetimepicker" value="'.date('d.m.Y H:i',time()).'">
+							</td>
+						</tr>
+					</table>
+					<table class="standard">
+						<thead>
+							<th width="80%">Name</th>
+							<th>Stimmen</th>
+						</thead>';
 		foreach($vorschlag as $key => $v) {
 			$cols		= array("ID", "Text", "IP", "ErstelltAm");
 			$db_vorschlag	= $db->get(T_ABSTIMMUNG_VORSCHLAEGE, null, $cols);
 			$inhalt		.= '<tr>
-								<td><input type="text" name="vorschlag_name[]" value="'.$db_vorschlag[0]['Text'].'"></td>
-								<td><input type="text" name="vorschlag_stimmen[]" value="0"></td>
+								<td><input type="text" name="vorschlag_name[]" value="'.$db_vorschlag[0]['Text'].'" style="width:100%;"></td>
+								<td><input type="text" name="vorschlag_stimmen[]" value="0" style="width:100%;"></td>
 							</tr>';
 		}
 		$inhalt .= '</table>
-					<input type="submit" name="add_abstimmung" value="Abstimmung hinzufügen">
+					<input type="submit" name="add_abstimmung" value="Abstimmung hinzufügen" class="btn">
 				</form>';
 	}
 }
@@ -91,7 +99,7 @@ else {
 					<input type="submit" value="ausgewählte für Abstimmung benutzen" class="btn" name="do[1]">
 	<table class="standard">
 		<thead>
-			<th>Text</th>
+			<th>Vorschlag</th>
 			<th width="23%">Erstellt Am</th>
 			<th width="20%">IP</th>
 			<th width="5%"></th>
@@ -112,6 +120,12 @@ else {
 	<link rel="stylesheet" type="text/css" href="style.css">
 	<link rel="stylesheet" href="../css/tcal.css">
 	<script type="text/javascript" src="../js/simpletcal.js"></script>
+	<link rel="stylesheet" href="../js/protoplasm/protoplasm_full.css">
+	<script type="text/javascript" src="../js/protoplasm/protoplasm_full.js"></script>
+	<script language="javascript">
+		Protoplasm.use('datepicker')
+			.transform('input.datetimepicker', { 'locale': 'de_DE','timePicker':true, dateTimeFormat: 'dd.MM.yyyy HH:mm', use24hrs: true, });
+	</script>
 </head>
 <body>
 	<div id="container">

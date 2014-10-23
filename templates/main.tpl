@@ -16,8 +16,11 @@
 		</div>
 		<div class="clear"></div>
 		<div id="player">
-			Auf Sendung :   <br/>Rock NonStop<br/>
-			<a href="http://login.streamplus.de/app.php/shoutcast/public/playlist/download/26174.m3u"><img src="img/radio.png"><br/>Zum Radio</a>
+			<a href="http://login.streamplus.de/app.php/shoutcast/public/playlist/download/26174.m3u">
+				{PLAYERTEXT}<br/>
+				<img src="img/radio.png" width="100px" height="66px"><br/>
+				Zum Radio
+			</a>
 		</div>
 		<div class="clear"></div>
 	</div>
@@ -26,7 +29,7 @@
 			<a href="index.php"><li>Startseite</li></a>
 			<a href="kontakt.php"><li>Kontakt</li></a>
 			<a href="termine.php"><li>Termine</li></a>
-			<a href="toplist.php"><li>Abstimmen</li></a>
+			<a href="toplist.php"><li>TOP 20 - Vote</li></a>
 			<a href="info.php"><li>Info</li></a>
 		</ul>
 		<div class="clear"></div>
@@ -38,7 +41,9 @@
 		<ul>
 			<a href="impressum.php"><li>Impressum</li></a>
 		</ul>
+		<span class="right"><a href="https://www.facebook.com/pages/Radio-RockScheune/513412038789738"><img src="img/ico/fb.jpg" /></a></span>
 		<div class="clear"></div>
+		
 	</div>
 </div>
 </body>

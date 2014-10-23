@@ -9,8 +9,8 @@ $inhalt = null;
 if(isset($_POST['edit'])) {
 	$ID		= $_POST['id'];
 	$Text	= $_POST['text'];
-	$Von	= $_POST['von'];
-	$Bis	= $_POST['bis'];
+	$Von	= date('Y-m-d H:i:s', strtotime($_POST['von']));
+	$Bis	= date('Y-m-d H:i:s', strtotime($_POST['bis']));
 	
 	$data = Array (
 		'Text'	=> $Text,
@@ -18,8 +18,8 @@ if(isset($_POST['edit'])) {
 		'Bis'	=> $Bis
 	);
 	$db->where('ID', $ID);
-	if ($db->update('termine', $data))echo 'Der Eintrag wurde erfolgreich bearbeitet!';
-	else echo 'update failed: ' . $db->getLastError();
+	if ($db->update('termine', $data))$inhalt .= '<div class="alert-box success">Der Eintrag wurde erfolgreich bearbeitet</div>';
+	else $inhalt .= 'update failed: ' . $db->getLastError();
 }
 
 if(isset($_POST['delete'])) {
@@ -49,10 +49,26 @@ if(isset($_GET['edit'])) {
 	foreach ($termine as $termin) {
 		$inhalt .= '<form method="POST" action="index.php?p=termine"><input type="submit" name="back" value="Zurück"></form>
 		<form method="POST">
-			<input type="text" name="text" value="'.$termin['Text'].'" size="50"><br />
-			<input type="text" name="von" value="'.$termin['Von'].'"><input type="text" name="bis" value="'.$termin['Bis'].'"><br />
-		<input type="hidden" name="id" value="'.$termin['ID'].'">
-		<input type="submit" name="edit" value="Speichern">
+			<table class="standard">
+				<tr>
+					<td>Beschreibung:</td>
+					<td><input type="text" name="text" value="'.$termin['Text'].'" size="50"></td>
+				</tr>
+				<tr>
+					<td>Von:</td>
+					<td><input type="text" name="von" value="'.date('d.m.Y H:i',strtotime($termin['Von'])).'" class="datetimepicker"></td>
+				</tr>
+				<tr>
+					<td>Bis:</td>
+					<td><input type="text" name="bis" value="'.date('d.m.Y H:i',strtotime($termin['Bis'])).'" class="datetimepicker"></td>
+				</tr>
+				<tr>
+					<td colspan="2">
+						<input type="hidden" name="id" value="'.$termin['ID'].'">
+						<input type="submit" name="edit" value="Speichern">
+					</td>
+				</tr>
+			</table>
 		</form>';
 	}
 }
@@ -112,14 +128,14 @@ if(isset($_GET['add']) == 'week') {
 			$inhalt .= '<form method="POST"><table class="standard">
 						<thead>
 							<th>Datum</th>
-							<th>Text</th>
+							<th width="60%">Text</th>
 							<th>Von</th>
 							<th>Bis</th>
 						</thead>';
 			for($i = 0; $i <= $diff->days; $i++) {
 				$inhalt .= '<tr>
 								<td>'.$todayDate->format('d.m.Y').'</td>
-								<td><input type="text" size="40" name="text['.$i.']"></td>
+								<td><input type="text" name="text['.$i.']" style="width:100%;"></td>
 								<td><input type="text" size="2" name="von_std['.$i.']">:<input type="text" size="2" name="von_min['.$i.']"></td>
 								<td><input type="text" size="2" name="bis_std['.$i.']">:<input type="text" size="2" name="bis_min['.$i.']"></td>
 							</tr>';
@@ -130,14 +146,24 @@ if(isset($_GET['add']) == 'week') {
 							<td colspan="5">
 								<input type="hidden" name="startDate" value="'.$startDate->format('d.m.Y').'">
 								<input type="hidden" name="endDate" value="'.$endDate->format('d.m.Y').'">
-								<input type="submit" name="add_week" value="Speichern">
+								<input type="submit" name="add_week" value="Speichern" class="btn">
 							</td>
 						</tr></table></form>';
 		} else {
 			$inhalt = '<form method="POST" action="termin.php?add=week">
-				<input type="date" name="von">
-				<input type="date" name="bis">
-				<input type="submit" name="selected" value="Eintrag für Woche">
+				<table class="standard">
+					<tr>
+						<td>Von:</td>
+						<td><input type="text" name="von" class="datepicker"></td>
+					</tr>
+					<tr>
+						<td>Bis:</td>
+						<td><input type="text" name="bis" class="datepicker"></td>
+					</tr>
+					<tr>
+						<td colspan="2"><input type="submit" name="selected" value="Eintrag für Woche"></td>
+					</tr>
+				</table>
 			</form>';
 		}
 	}
@@ -148,7 +174,12 @@ if(isset($_GET['add']) == 'week') {
 <head>
 	<link rel="stylesheet" type="text/css" href="style.css">
 	<link rel="stylesheet" href="../css/tcal.css">
-	<script type="text/javascript" src="../js/simpletcal.js"></script>
+	<script type="text/javascript" src="../js/protoplasm/protoplasm_full.js"></script>
+	<script language="javascript">
+		Protoplasm.use('datepicker')
+			.transform('input.datepicker', { 'locale': 'de_DE', dateFormat: 'dd.MM.yyyy', use24hrs: true, })
+			.transform('input.datetimepicker', { 'locale': 'de_DE','timePicker':true, dateTimeFormat: 'dd.MM.yyyy HH:mm', use24hrs: true, });
+	</script>
 </head>
 <body>
 	<div id="container">

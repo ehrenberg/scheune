@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: 127.0.0.1
--- Erstellungszeit: 22. Okt 2014 um 16:45
+-- Erstellungszeit: 23. Okt 2014 um 15:59
 -- Server Version: 5.6.17
 -- PHP-Version: 5.5.12
 
@@ -40,7 +40,7 @@ CREATE TABLE IF NOT EXISTS `abstimmung` (
 --
 
 INSERT INTO `abstimmung` (`ID`, `Bezeichnung`, `ErstelltAm`, `GueltigBis`, `Aktiv`) VALUES
-(4, 'Test', '0000-00-00 00:00:00', '2014-10-22 15:00:00', 1),
+(4, 'Test', '0000-00-00 00:00:00', '2014-10-23 16:00:00', 1),
 (6, 'Test 2', '2014-10-22 12:04:13', '2014-10-31 15:00:00', 0);
 
 -- --------------------------------------------------------
@@ -59,7 +59,7 @@ CREATE TABLE IF NOT EXISTS `abstimmung_ip` (
   KEY `Titel_ID` (`Abstimmung_ID`),
   KEY `Abstimmung_ID` (`Abstimmung_ID`),
   KEY `Abstimmung_ID_2` (`Abstimmung_ID`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=22 ;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
@@ -74,14 +74,19 @@ CREATE TABLE IF NOT EXISTS `abstimmung_titel` (
   `Name` varchar(150) NOT NULL,
   PRIMARY KEY (`ID`),
   KEY `Abstimmung_ID` (`Abstimmung_ID`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=85 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=90 ;
 
 --
 -- Daten für Tabelle `abstimmung_titel`
 --
 
 INSERT INTO `abstimmung_titel` (`ID`, `Abstimmung_ID`, `Stimmen`, `Name`) VALUES
-(84, 6, 100, 'Vorschlag 1');
+(84, 6, 100, 'Vorschlag 1'),
+(85, 4, 10, 'Test Tester'),
+(86, 4, 65, 'Chirons Tide'),
+(87, 4, 1, 'Bla bla Band'),
+(88, 4, 33, 'Wir sind#s'),
+(89, 4, 0, 'HeyhoRocknRoll');
 
 -- --------------------------------------------------------
 
@@ -108,15 +113,34 @@ INSERT INTO `abstimmung_vorschlaege` (`ID`, `Text`, `Name`, `IP`, `ErstelltAm`) 
 -- --------------------------------------------------------
 
 --
+-- Tabellenstruktur für Tabelle `settings`
+--
+
+CREATE TABLE IF NOT EXISTS `settings` (
+  `ID` int(5) NOT NULL AUTO_INCREMENT,
+  `playerText` varchar(50) NOT NULL,
+  PRIMARY KEY (`ID`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=2 ;
+
+--
+-- Daten für Tabelle `settings`
+--
+
+INSERT INTO `settings` (`ID`, `playerText`) VALUES
+(1, 'Jin''s Blues Rock Lounge');
+
+-- --------------------------------------------------------
+
+--
 -- Tabellenstruktur für Tabelle `templates`
 --
 
 CREATE TABLE IF NOT EXISTS `templates` (
   `ID` int(5) NOT NULL AUTO_INCREMENT,
-  `FileName` varchar(100) NOT NULL,
+  `FileName` varchar(50) NOT NULL,
   `Name` varchar(50) NOT NULL,
   PRIMARY KEY (`ID`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=4 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=5 ;
 
 --
 -- Daten für Tabelle `templates`
@@ -146,7 +170,7 @@ CREATE TABLE IF NOT EXISTS `termine` (
 --
 
 INSERT INTO `termine` (`ID`, `Text`, `Von`, `Bis`) VALUES
-(18, 'WunschHits inner Scheune - Hörer machen Programm', '2014-10-25 16:00:00', '2014-10-25 19:00:00'),
+(18, 'WunschHits inner Scheune - Hörer machen Programm', '2014-10-23 13:00:00', '2014-10-23 16:00:00'),
 (17, 'Rock in''s Wochenende mit Ivo', '2014-10-24 16:00:00', '2014-10-24 19:00:00'),
 (16, 'Day Of Classic Rock', '2014-10-23 09:00:00', '2014-10-23 19:00:00'),
 (15, 'WunschHits inner Scheune - Hörer machen Programm', '2014-10-22 16:00:00', '2014-10-22 19:00:00'),

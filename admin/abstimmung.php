@@ -8,7 +8,7 @@ $inhalt = null;
  */
 if(isset($_POST['add'])) {
 	$Bezeichnung	= $_POST['bezeichnung'];
-	$GueltigBis		= date('Y-m-d H:i:s',strtotime($_POST['gueltigbis_date'].' '.$_POST['gueltigbis_time']));
+	$GueltigBis		= date('Y-m-d H:i:s',strtotime($_POST['gueltigbis']));
 	
 	$data = Array ("Bezeichnung"	=> $Bezeichnung, "ErstelltAm" => date('Y-m-d H:i:s',time()), "GueltigBis" => $GueltigBis);
 	$id = $db->insert(T_ABSTIMMUNG, $data);
@@ -40,7 +40,7 @@ if(isset($_POST['add_titel'])) {
 if(isset($_POST['edit'])) {
 	$ID				= $_POST['id'];
 	$Bezeichnung	= $_POST['bezeichnung'];
-	$GueltigBis		= date('Y-m-d H:i:s',strtotime($_POST['gueltigbis_date'].' '.$_POST['gueltigbis_time']));
+	$GueltigBis		= date('Y-m-d H:i:s',strtotime($_POST['gueltigbis']));
 	if(isset($_POST['Aktiv']))$Aktiv			= $_POST['Aktiv'];
 	else $Aktiv = false;
 	
@@ -125,23 +125,30 @@ else if(isset($_GET['edit'])) {
 		if($abstimmung['Aktiv'] == 1)$checked = 'checked';
 		else $checked = '';
 		
-		$gueltigbis_date = date('d.m.Y', strtotime($abstimmung['GueltigBis']));
-		$gueltigbis_time = date('H:i', strtotime($abstimmung['GueltigBis']));
+		$gueltigbis_date = date('d.m.Y H:i', strtotime($abstimmung['GueltigBis']));
 		
-		$inhalt .= '<form method="POST" action="abstimmung.php"><input type="submit" name="back" value="Zurück"></form>
-		<br />
+		$inhalt .= '<form method="POST" action="abstimmung.php"><input type="submit" name="back" value="Zurück" class="btn"></form>
 		<form method="POST">
-			<label for="bezeichnung">Bezeichnung: </label>
-			<input type="text" name="bezeichnung" id="bezeichnung" value="'.$abstimmung['Bezeichnung'].'" size="40"><br />
-			
-			<label for="gueltigbis_date">Gültig Bis: </label>
-			<input type="text" name="gueltigbis_date" value="'.$gueltigbis_date.'" class="tcal" size="10">
-			<input type="text" name="gueltigbis_time" value="'.$gueltigbis_time.'" size="5"> Uhr<br />
-			
-			<label for="aktiv">Aktiv: </label><input type="checkbox" name="Aktiv" id="aktiv" '.$checked.'><br />
-		<input type="hidden" name="id" value="'.$abstimmung['ID'].'">
-		<br/>
-		<input type="submit" name="edit" value="Speichern">
+			<table class="standard">
+				<tr>
+					<td>Bezeichnung: </td>
+					<td><input type="text" name="bezeichnung" id="bezeichnung" value="'.$abstimmung['Bezeichnung'].'" size="40"></td>
+				</tr>
+				<tr>
+					<td>Gültig Bis:</td>
+					<td><input type="text" name="gueltigbis" value="'.$gueltigbis_date.'" class="datepicker_de"></td>
+				</tr>
+				<tr>
+					<td>Aktiv: </td>
+					<td><input type="checkbox" name="Aktiv" id="aktiv" '.$checked.'></td>
+				</tr>
+				<tr>
+					<td>
+						<input type="hidden" name="id" value="'.$abstimmung['ID'].'">
+						<input type="submit" name="edit" value="Speichern" class="btn">
+					</td>
+				</tr>
+			</table>
 		</form>';
 	}
 } else if(isset($_GET['edit_titel'])) {
@@ -154,11 +161,22 @@ else if(isset($_GET['edit'])) {
 	foreach ($titeldaten as $titel) {
 		$inhalt .= '<form method="POST" action="abstimmung.php?id='.$_GET['aid'].'"><input type="submit" name="back" value="Zurück"></form>
 		<form method="POST">
-			<input type="text" name="name" value="'.$titel['Name'].'" size="50"><br />
-			<input type="text" name="stimmen" value="'.$titel['Stimmen'].'" size="50"><br />
-			
-			<input type="hidden" name="id" value="'.$titel['ID'].'">
-			<input type="submit" name="edit_titel" value="Speichern">
+			<table class="standard">
+				<tr>
+					<td>Name:</td>
+					<td><input type="text" name="name" value="'.$titel['Name'].'" size="50"></td>
+				</tr>
+				<tr>
+					<td>Stimmen:</td>
+					<td><input type="text" name="stimmen" value="'.$titel['Stimmen'].'" size="5"></td>
+				</tr>
+				<tr>
+					<td colspan="2">
+						<input type="hidden" name="id" value="'.$titel['ID'].'">
+						<input type="submit" name="edit_titel" value="Speichern">
+					</td>
+				</tr>
+			</table>
 		</form>';
 	}
 }
@@ -174,7 +192,7 @@ else if(isset($_GET['add'])) {
 		</tr>
 		<tr>
 			<td>Gültig Bis:</td>
-			<td><input type="text" name="gueltigbis_date" class="tcal" size="10"><input type="text" name="gueltigbis_time" size="4"> Uhr (Format:00:00)</td>
+			<td><input type="text" name="gueltigbis_date" class="datepicker"><input type="text" name="gueltigbis_time" size="4"> Uhr (Format:00:00)</td>
 		</tr>
 		<tr>
 			<td colspan="2"><input type="submit" name="add" value="Speichern"></td>
@@ -225,18 +243,16 @@ else if(isset($_GET['id'])) {
 		$titeldaten		= $db->get(T_ABSTIMMUNG_TITEL, null, $cols);
 		
 		$inhalt .= '<form method="GET" action="abstimmung.php">
+						Anzahl Titel:<input type="text" name="count" size="4">
 						<input type="hidden" name="add_titel" value="">
 						<input type="hidden" name="aid" value="'.$abstimmung['ID'].'">
-						
-						Anzahl Titel:<input type="text" name="count" size="4">
-						
 						<input type="submit" value="hinzufügen" class="btn">
 					</form>
 					<table class="standard">
 						<thead>
-							<th>Name</th>
-							<th width="11%">Stimmen</th>
-							<th width="30%">Abstimmung</th>
+							<th width="45%">Name</th>
+							<th width="10%">Stimmen</th>
+							<th width="40%">Abstimmung</th>
 							<th></th>
 						</thead>';
 		foreach ($titeldaten as $titel) {
@@ -260,10 +276,10 @@ else if(isset($_GET['id'])) {
 	$inhalt .= '<a class="btn" href="abstimmung.php?add">Neue Abstimmung</a>
 	<table class="standard">
 		<thead>
-			<th>Text</th>
-			<th>Erstellt Am</th>
-			<th>Gültig Bis</th>
-			<th></th>
+			<th width="55%">Abstimmung</th>
+			<th width="20%">Erstellt Am</th>
+			<th width="20%">Gültig Bis</th>
+			<th width="5%"></th>
 		</thead>';
 	foreach ($abstimmungen as $abstimmung) {
 		$link = 'abstimmung.php?id='.$abstimmung['ID'].'';
@@ -286,6 +302,11 @@ else if(isset($_GET['id'])) {
 	<link rel="stylesheet" type="text/css" href="style.css">
 	<link rel="stylesheet" href="../css/tcal.css">
 	<script type="text/javascript" src="../js/simpletcal.js"></script>
+	<script type="text/javascript" src="../js/protoplasm/protoplasm_full.js"></script>
+	<script language="javascript">
+		Protoplasm.use('datepicker')
+			.transform('input.datepicker_de', { locale: 'de_DE', timePicker : true, dateTimeFormat: 'dd.MM.yyyy HH:mm', use24hrs: true });
+	</script>
 </head>
 <body>
 	<div id="container">
