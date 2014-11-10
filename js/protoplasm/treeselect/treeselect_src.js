@@ -1,13 +1,14 @@
-/*
- * Control.TreeSelect
+if (typeof Protoplasm == 'undefined')
+	throw('protoplasm.js not loaded, could not intitialize treeselect');
+if (window.Control == undefined) Control = {};
+
+/**
+ * class Control.TreeSelect
  * 
  * Creates a heirarchical select list.
  *
  * Written and maintained by Jeremy Jongsma (jeremy@jongsma.org)
- */
-if (window.Control == undefined) Control = {};
-
-// Needs overhaul to use Prototype
+**/
 Control.TreeSelect = function(element, options) {
 
 	// Private members
@@ -204,5 +205,4 @@ Control.TreeSelect = function(element, options) {
 	}
 }
 
-if (typeof Protoplasm != 'undefined')
-	Protoplasm.register('treeselect', Control.TreeSelect);
+Protoplasm.register('treeselect', Control.TreeSelect);

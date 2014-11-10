@@ -1,9 +1,19 @@
-/*
- * Control.FileChooser
+if (typeof Protoplasm == 'undefined')
+	throw('protoplasm.js not loaded, could not intitialize filechooser');
+if (typeof Control == 'undefined') Control = {};
+
+Protoplasm.use('dialog');
+Protoplasm.use('upload');
+Protoplasm.loadStylesheet('filechooser.css', 'filechooser');
+
+/**
+ * class Control.FileChooser
  * 
  * Displays a file chooser when a user clicks on the file select icon in
  * the input control.  Requires a user-provided function to provide directory
  * queries (static or via AJAX).
+ *
+ * Control ID: `filechooser`
  *
  * Features:
  *  - Image preview
@@ -11,14 +21,38 @@
  *  - Create and delete directories and files
  *  - Customizable by CSS
  *
- * Written and maintained by Jeremy Jongsma (jeremy@jongsma.org)
- */
-if (window.Control == undefined) Control = {};
+ * Example: <a href="http://jongsma.org/software/protoplasm/control/filechooser">File
+ * Chooser demo</a>
+**/
+Control.FileChooser = Class.create({
 
-Control.FileChooser = Class.create();
-Control.FileChooser.prototype = {
+/**
+ * new Control.FileChooser(element, fileHandler[, options])
+ * - element (String | Element): A `<input type="text">` element (or DOM ID).
+ * - fileHandler (Function): The file lister callback.
+ * - options (Hash): Additional options for the control.
+ *
+ * Create a new file chooser from the given `<input type="text">`
+ * element.
+ *
+ * For details on the fileHandler specifications, see
+ * the <a href="http://jongsma.org/software/protoplasm/control/filechooser#filehandler">online
+ * documentation</a>.
+ *
+ * Additional options:
+ *
+ * * icon: The icon to display in the input box
+ * * fileImage: The file icon to use in the chooser
+ * * directoryImage: The directory icon to use in the chooser
+ * * parentImage: The parent directory icon to use in the chooser
+**/
 	initialize: function(element, fileManager, options) {
 
+/**
+ * Control.FileChooser#element -> Element
+ *
+ * The underlying `<input>` element passed to the constructor.
+**/
 		this.element = $(element);
 
 		if (fc = this.element.retrieve('filechooser'))
@@ -27,18 +61,11 @@ Control.FileChooser.prototype = {
 		this.options = options || {};
 		
 		// Load resources from script directory
-		if (window.Protoplasm != undefined) {
-			var basePath = Protoplasm.base('filechooser');
-			// Set icon
-			if (basePath) {
-				if (!this.options.icon) this.options.icon = basePath + 'filechooser.png';
-				if (!this.options.fileImage) this.options.fileImage = basePath + 'file.gif';
-				if (!this.options.directoryImage) this.options.directoryImage = basePath + 'directory.gif';
-				if (!this.options.parentImage) this.options.parentImage = basePath + 'parent.gif';
-				// Load default stylesheet
-				Protoplasm.loadStylesheet('filechooser.css', 'filechooser');
-			}
-		}
+		var base = Protoplasm.base('filechooser');
+		if (!this.options.icon) this.options.icon = base + 'filechooser.png';
+		if (!this.options.fileImage) this.options.fileImage = base + 'file.gif';
+		if (!this.options.directoryImage) this.options.directoryImage = base + 'directory.gif';
+		if (!this.options.parentImage) this.options.parentImage = base + 'parent.gif';
 
 		if (this.options.icon) {
 			this.element.style.background = 'url('+this.options.icon+') right center no-repeat #FFF';
@@ -47,7 +74,13 @@ Control.FileChooser.prototype = {
 			this.element.style.paddingRight = '20px';
 		}
 
-		this.filechooser = new Control.FileChooserPanel(fileManager, Object.extend({
+/**
+ * Control.FileChooser#panel -> Control.FileChooser.Panel
+ *
+ * The panel dialog box linked to this control.  This may be
+ * null if the control is not open.
+**/
+		this.panel = new Control.FileChooser.Panel(fileManager, Object.extend({
 				openListener: this.fileSelected.bind(this),
 				standalone: true,
 				selectFile: this.element.value
@@ -55,26 +88,36 @@ Control.FileChooser.prototype = {
 
 		this.dialogOpen = false;
 
-		this.dialog = this.filechooser.getElement();
+		this.dialog = this.panel.getElement();
 
 		this.listeners = [
-			this.element.on('click', this.toggleChooser.bindAsEventListener(this)),
+			this.element.on('click', this.toggle.bindAsEventListener(this)),
 			this.element.on('blur', this.delayedHide.bindAsEventListener(this)),
 			this.dialog.on('click', this.cancelHide.bindAsEventListener(this)),
-			this.element.on('keydown', this.hideChooser.bindAsEventListener(this))
+			this.element.on('keydown', this.keyHandler.bindAsEventListener(this))
 		];
 
 		this.clickListener = null;
+		this.keyListener = null;
 
 		this.element.store('filechooser', this);
 		this.destructor = Event.on(window, 'unload', this.destroy.bind(this));
 	},
+
+/**
+ * Control.FileChooser#destroy() -> null
+ *
+ * Destroy this control and return the underlying element to
+ * its original behavior.
+**/
 	destroy: function() {
-		this.hideChooser();
+		this.hide();
 		for (var i = 0; i < this.listeners.length; i++)
 			this.listeners[i].stop();
 		if (this.clickListener)
 			this.clickListener.stop();
+		if (this.keyListener)
+			this.keyListener.stop();
 		//this.wrapper.parentNode.replaceChild(this.element, this.wrapper);
 		this.element.style.paddingRight = this.oldPadding;
 		this.element.store('filechooser', null);
@@ -82,14 +125,27 @@ Control.FileChooser.prototype = {
 	},
 
 	fileSelected: function(file) {
-		this.element.value = file.url;
-		this.hideChooser();
+		if (file)
+			this.element.value = file.url;
+		this.hide();
 	},
-	toggleChooser: function() {
-		if (this.dialogOpen) this.hideChooser();
-		else this.showChooser();
+
+/**
+ * Control.FileChooser#toggle() -> null
+ *
+ * Toggle the visibility of the file chooser panel for this control.
+**/
+	toggle: function() {
+		if (this.dialogOpen) this.hide();
+		else this.show();
 	},
-	showChooser: function() {
+
+/**
+ * Control.FileChooser#show() -> null
+ *
+ * Show the file chooser panel for this control.
+**/
+	show: function() {
 		if (!this.dialogOpen) {
 			var dim = Element.getDimensions(this.element);
 			var position = Position.cumulativeOffset(this.element);
@@ -97,16 +153,17 @@ Control.FileChooser.prototype = {
 			this.dialog.style.top = pickerTop;
 			this.dialog.style.left = position[0] + 'px';
 			if (this.element.value)
-				this.filechooser.select(this.element.value);
+				this.panel.select(this.element.value);
 			else
-				this.filechooser.refresh();
+				this.panel.refresh();
 			document.body.appendChild(this.dialog);
 			this.clickListener = document.on('click', this.documentClickHandler.bindAsEventListener(this));
+			this.keyListener = document.on('keydown', this.escHandler.bindAsEventListener(this));
 			this.dialogOpen = true;
 		}
 	},
 	delayedHide: function(e) {
-		this.hideTimeout = setTimeout(this.hideChooser, 100);
+		this.hideTimeout = setTimeout(this.hide, 100);
 	},
 	cancelHide: function(e) {
 		if (this.hideTimeout) {
@@ -114,48 +171,107 @@ Control.FileChooser.prototype = {
 			this.hideTimeout = null;
 		}
 	},
-	hideChooser: function() {
+/**
+ * Control.FileChooser#hide() -> null
+ *
+ * Hide the file chooser panel for this control.
+**/
+	hide: function() {
 		if (this.dialogOpen) {
 			if (this.clickListener) {
 				this.clickListener.stop();
 				this.clickListener = null;
+			}
+			if (this.keyListener) {
+				this.keyListener.stop();
+				this.keyListener = null;
 			}
 			if (this.dialog.parentNode)
 				Element.remove(this.dialog);
 			this.dialogOpen = false;
 		}
 	},
+	keyHandler: function(e) {
+		switch(e.keyCode) {
+			case Event.KEY_DOWN:
+				this.show();
+				break;
+		}
+	},
+	escHandler: function(e) {
+		switch(e.keyCode) {
+			case Event.KEY_ESC:
+				this.hide();
+				break;
+		}
+	},
 	documentClickHandler: function(e) {
 		var element = Event.element(e);
 		var abort = false;
 		do {
-			if (element == this.dialog || element == this.element)
+			if (element == this.dialog || element == this.element
+					|| (Dialog.active && (element == Dialog.active.contents
+						|| element == Dialog.active.overlay)))
 				abort = true;
 		} while (element = element.parentNode);
 		if (!abort)
-			this.hideChooser();
+			this.hide();
 	}
-};
+});
 
-Control.FileChooserPanel = Class.create();
-Control.FileChooserPanel.prototype = {
+/**
+ * class Control.FileChooser.Panel
+ *
+ * The dialog panel that is displayed when the file chooser is opened.
+**/
+Control.FileChooser.Panel = Class.create({
 
+/**
+ * new Control.FileChooser.Panel([options])
+ * - fileHandler (Function): The file lister callback.
+ * - options (Hash): Additional options for the control.
+ *
+ * Create a new file chooser panel.
+ *
+ * For details on the fileHandler specifications, see
+ * the <a href="http://jongsma.org/software/protoplasm/control/filechooser#filehandler">online
+ * documentation</a>.
+ *
+ * Additional options:
+ *
+ * * icon: The icon to display in the input box
+ * * className: The class name for the main panel container
+ * * width: The panel width
+ * * width: The panel height
+ * * fileImage: The file icon to use in the chooser
+ * * directoryImage: The directory icon to use in the chooser
+ * * parentImage: The parent directory icon to use in the chooser
+ * * uploadHandler: The upload handler function, called when "Upload"
+ *   is clicked
+**/
 	initialize: function(fileLister, options) {
 		this.fileLister = fileLister || Prototype.emptyFunction;
 		this.options = Object.extend({
 				width: 360,
 				height: 220,
-				className: 'filechooserControl',
+				className: '',
 				fileImage: '/images/icons/file.gif',
 				directoryImage: '/images/icons/directory.gif',
 				parentImage: '/images/icons/parent.gif',
-				uploadHandler: this.showUploadDialog.bindAsEventListener(this)
+				uploadProgress: false
 			}, options || {});
+
+		this.uploadHandler = this.options.uploadProgress
+			?  this.showAdvancedUploadDialog.bind(this)
+			: this.showUploadDialog.bind(this);
+/**
+ * Control.FileChooser.Panel#element -> Element
+ *
+ * The root Element of this dialog panel.
+**/
 		this.element = this.createFileChooser();
 		if (this.options.selectFile)
 			this.select(this.options.selectFile);
-		//else
-			//this.refresh();
 	},
 
 	getElement: function() {
@@ -163,15 +279,13 @@ Control.FileChooserPanel.prototype = {
 	},
 
 	createFileChooser: function() {
-		var browser = document.createElement('div');
+		var browser = new Element('div');
 
-		this.directoryHeader = document.createElement('div');
-		this.directoryHeader.style.marginBottom = '5px';
-		this.directoryHeader.className = 'directoryheader';
-		this.directoryHeader.innerHTML = '&nbsp;';
+		this.directoryHeader = new Element('div', { 'class': '_pp_filechooser_directoryheader',
+			'style': 'margin-bottom:5px;'}).update('&nbsp;');
 		browser.appendChild(this.directoryHeader);
 
-		var table = document.createElement('table');
+		var table = new Element('table');
 		table.cellSpacing = 0;
 		table.cellPadding = 0;
 		table.style.border = 0;
@@ -185,32 +299,25 @@ Control.FileChooserPanel.prototype = {
 
 		var cell = row.insertCell(0);
 		cell.vAlign = 'top';
-		this.fileList = document.createElement('div');
-		Element.setStyle(this.fileList, {'height': listHeight + 'px', 'width': listWidth + 'px', 'overflow': 'auto', 'marginRight': '3px', 'marginBottom': '5px'});
-		this.fileList.className = 'filelist';
-		this.fileList.onmousedown = function() { return false; };
-		this.fileList.onselectstart = function() { return false; };
+		this.fileList = new Element('div', { 'class': '_pp_panel _pp_inset',
+			'style': 'height:'+listHeight+'px;width'+listWidth+'px;overflow:auto;margin-right:3px;margin-bottom:5px;'});
+		this.fileList.on('mousedown', function() { return false; });
+		this.fileList.on('selectstart', function() { return false; });
 		cell.appendChild(this.fileList);
 
-		this.createButton = document.createElement('input');
-		this.createButton.type = 'button';
-		this.createButton.value = 'New Folder';
-		this.createButton.style.marginRight = '5px';
-		this.createButton.style.width = Math.round((listWidth - 10) / 3) + 'px';
-		this.createButton.onclick = this.showDirectoryCreateDialog.bindAsEventListener(this);
-		this.uploadButton = document.createElement('input');
-		this.uploadButton.type = 'button';
-		this.uploadButton.value = 'New File';
-		this.uploadButton.style.marginRight = '5px';
-		this.uploadButton.style.width = Math.round((listWidth - 10) / 3) + 'px';
-		this.uploadButton.onclick = function(e) { this.options.uploadHandler(this); }.bindAsEventListener(this);
-		this.deleteButton = document.createElement('input');
-		this.deleteButton.type = 'button';
-		this.deleteButton.value = 'Delete';
-		this.deleteButton.style.width = Math.round((listWidth - 10) / 3) + 'px';
-		this.deleteButton.onclick = this.showDeleteDialog.bindAsEventListener(this);
+		this.createButton = new Element('input', { 'type': 'button', 'value': 'New Folder', 'class': '_pp_button',
+			'style': 'margin-right:5px;width:'+Math.round((listWidth - 10) / 3)+'px'});
+		this.createButton.on('click', this.showDirectoryCreateDialog.bindAsEventListener(this));
 
-		var buttons = document.createElement('div');
+		this.uploadButton = new Element('input', { 'type': 'button', 'value': 'New File', 'class': '_pp_button',
+			'style': 'margin-right:5px;width:'+Math.round((listWidth - 10) / 3)+'px'});
+		this.uploadButton.on('click', function(e) { this.uploadHandler(this); }.bindAsEventListener(this));
+
+		this.deleteButton = new Element('input', { 'type': 'button', 'value': 'Delete', 'class': '_pp_button',
+			'style': 'width:'+Math.round((listWidth - 10) / 3)+'px'});
+		this.deleteButton.on('click', this.showDeleteDialog.bindAsEventListener(this));
+
+		var buttons = new Element('div');
 		buttons.appendChild(this.createButton);
 		buttons.appendChild(this.uploadButton);
 		buttons.appendChild(this.deleteButton);
@@ -218,20 +325,20 @@ Control.FileChooserPanel.prototype = {
 
 		cell = row.insertCell(1);
 		cell.vAlign = 'top';
-		this.filePreview = document.createElement('div');
-		Element.setStyle(this.filePreview, {'height': previewHeight + 'px', 'width': previewWidth + 'px', 'marginLeft': '3px', 'marginBottom': '5px', 'overflow': 'hidden', 'position': 'relative'});
-		this.filePreview.className = 'filepreview';
+		this.filePreview = new Element('div', { 'class': '_pp_filechooser_preview _pp_inset',
+			'style': 'height:'+previewHeight+'px;width:'+previewWidth
+				+'px;margin-left:3px;margin-bottom:5px;overflow:hidden;position:relative'});
 		cell.appendChild(this.filePreview);
 
 		browser.appendChild(table);
 
-		Event.observe(document, 'keypress', this.keyPressListener());
+		document.on('keydown', this.keyPressListener());
 
 		if (this.options.standalone) {
-			var form = document.createElement('form');
+			var form = new Element('form');
 			form.style.margin = 0;
 
-			var table = document.createElement('table');
+			var table = new Element('table');
 			table.cellSpacing = 0;
 			table.cellPadding = 0;
 			table.border = 0;
@@ -239,63 +346,72 @@ Control.FileChooserPanel.prototype = {
 			var row = table.insertRow(0);
 
 			var cell = row.insertCell(0);
-			this.fileLocation = document.createElement('input');
-			this.fileLocation.type = 'text';
-			this.fileLocation.style.width = '245px';
-			this.fileLocation.style.marginRight = '5px';
-			this.fileLocation.readOnly = true;
+			this.fileLocation = new Element('input', {'type': 'text', 'readOnly': true,
+				'style': 'width:245px;margin-right:5px'});
 			cell.appendChild(this.fileLocation);
 
 			cell = row.insertCell(1);
 			cell.style.textAlign = 'right';
-			var input = document.createElement('input');
-			input.type = 'button';
-			input.value = 'Cancel';
-			input.style.width = '50px';
-			input.style.marginRight = '5px';
-			input.onclick = function(e) { Element.remove(this.getElement()); }.bindAsEventListener(this);
+			var input = new Element('input', { 'type': 'button', 'value': 'Cancel', 'class': '_pp_button',
+				'style': 'width:50px;margin-right:5px;'});
+			input.on('click', function(e) { Element.remove(this.getElement()); }.bindAsEventListener(this));
 			cell.appendChild(input);
 
 			cell = row.insertCell(2);
 			cell.style.textAlign = 'right';
-			var input = document.createElement('input');
-			input.type = 'button';
-			input.value = 'Select';
-			input.style.width = '50px';
-			input.onclick = function(e) { (this.options.openListener || Prototype.emptyFunction)(this.selectedFile); }.bindAsEventListener(this);
+			var input = new Element('input', { 'type': 'button', 'value': 'Select', 'class': '_pp_button',
+				'style': 'width:50px;' });
+			input.on('click', function(e) {
+					(this.options.openListener || Prototype.emptyFunction)(this.selectedFile);
+				}.bindAsEventListener(this));
 			cell.appendChild(input);
 
 			form.appendChild(table);
 
 			browser.appendChild(form);
 
-			var wrapper = document.createElement('div');
+			var wrapper = new Element('div');
 			wrapper.style.position = 'absolute';
 			wrapper.appendChild(browser);
 
-			wrapper.className = this.options.className;
+			wrapper.className = '_pp_frame _pp_filechooser '+this.options.className;
 			return wrapper;
 		} else {
-			browser.className = this.options.className;
+			browser.className = '_pp_frame _pp_filechooser '+this.options.className;
 			return browser;
 		}
 	},
 
-	select: function(imageurl) {
+/**
+ * Control.FileChooser.Panel#select(file) -> null
+ * - file (String): The file path to select (relative to your file manager root)
+ *
+ * Navigate to the directory containing the given file and select
+ * it.
+**/
+	select: function(path) {
 		this.filePreview.innerHTML = '';
 		this.fileList.innerHTML = '<div style="padding:3px">Loading file list...</div>';
 		this.selectedFile = null;
-		var response = this.fileLister(null, this.selectByURL(imageurl).bind(this));
+		var response = this.fileLister(null, this.selectByURL(path).bind(this));
 		if (response)
-			this.selectByURL(imageurl)(response);
+			this.selectByURL(path)(response);
 	},
 
-	selectByURL: function(imageurl) {
+/**
+ * Control.FileChooser.Panel#selectByUrl(url) -> null
+ * - file (String): The file URL to select
+ *
+ * Navigate to the directory containing the file represented by the 
+ * given url and select it.
+**/
+	selectByURL: function(path) {
 		return function(directory) {
-			if (directory.status != 'error' && imageurl && imageurl.indexOf(directory.url) == 0) {
-				var relpath = imageurl.substr(directory.url.length);
+			console.log(directory);
+			if (directory.status != 'error' && path && path.indexOf(directory.url) == 0) {
+				var relpath = path.substr(directory.url.length);
 				var reldir = relpath.substr(0, relpath.lastIndexOf('/'));
-				this.pendingSelect = imageurl;
+				this.pendingSelect = path;
 				if (reldir != directory.path) {
 					this.refresh(reldir);
 					return;
@@ -305,11 +421,16 @@ Control.FileChooserPanel.prototype = {
 		}.bind(this);
 	},
 
+/**
+ * Control.FileChooser.Panel#refresh() -> null
+ *
+ * Refresh the current directory.
+**/
 	refresh: function(directory) {
 		if (!directory && this.currentDirectory) directory = this.currentDirectory.path;
-		if (this.prompt && this.prompt.parentNode) Element.remove(this.prompt);
-		this.filePreview.innerHTML = '';
-		this.fileList.innerHTML = '<div style="padding:3px">Loading file list...</div>';
+		Dialog.close();
+		this.filePreview.update();
+		this.fileList.update('<div style="padding:3px">Loading file list...</div>');
 		this.selectedFile = null;
 
 		var response = this.fileLister(directory, this.populateFileList.bind(this));
@@ -320,15 +441,15 @@ Control.FileChooserPanel.prototype = {
 
 	populateFileList: function(directory) {
 		if (directory.status == 'error') {
-			this.refresh();
+			this.fileList.update('<div style="padding:3px">Could not get directory contents.</div>');
 			return;
 		}
 
 		this.currentDirectory = directory;
 		this.entries = [];
 	
-		this.directoryHeader.innerHTML = '<b>Folder:</b> ' + (directory.path || '/');
-		this.fileList.innerHTML = '';
+		this.directoryHeader.update('<b>Folder:</b> ' + (directory.path || '/'));
+		this.fileList.update();
 		if (directory.parent)
 			this.entries[this.entries.length] = {
 				image: 'parent',
@@ -346,7 +467,7 @@ Control.FileChooserPanel.prototype = {
 		}
 
 		if (this.entries.length) {
-			var table = document.createElement('table');
+			var table = new Element('table');
 			var sRow = null;
 			table.cellSpacing = 0;
 			table.cellPadding = 0;
@@ -375,136 +496,75 @@ Control.FileChooserPanel.prototype = {
 				}
 			}
 		} else {
-			this.fileList.innerHTML = '<div style="padding:3px">To add items to your folder, please click <b>New Folder</b> or <b>New File</b> below.</div>';
+			this.fileList.update('<div style="padding:3px">To add items to your folder, please click <b>New Folder</b> or <b>New File</b> below.</div>');
 		}
 
 		if (directory.fileManager) {
 			this.createButton.disabled = false;
-			if ($('hidden_iframe'))
-				this.uploadButton.disabled = false;
-			else
-				this.uploadButton.disabled = true;
+			this.uploadButton.disabled = false;
 		} else {
 			this.createButton.disabled = true;
 			this.uploadButton.disabled = true;
 		}
 	},
 
-	showUploadDialog: function() {
-		var prompt = document.createElement('div');
-		prompt.className = 'prompt';
-		prompt.style.position = 'absolute';
-		prompt.onkeypress = function(e) {
-				if (e.stopPropagation)
-					e.stopPropagation();
-				else e.cancelBubble = true;
-			}.bindAsEventListener(this);
+	showAdvancedUploadDialog: function(chooser) {
+		this.showUploadDialog(chooser, true);
+	},
 
-		/* IE can't add frames dynamically and still use them as form targets
-		var uploadFrame = document.createElement('iframe');
-		uploadFrame.name = 'rte_uploadFrame';
-		uploadFrame.src = 'about:blank';
-		Element.hide(uploadFrame);
-		document.body.appendChild(uploadFrame);
-		*/
-		var uploadFrame = $('hidden_iframe');
-		var uploadComplete = function(e) {
-				var msg = uploadFrame.contentWindow.document.body.innerHTML;
-				if (prompt.parentNode) Element.remove(prompt);
-				if (msg && msg != '') alert(msg);
-				else this.refresh(this.currentDirectory.path);
-			}.bindAsEventListener(this);
-		// Mozilla
-		uploadFrame.onload = uploadComplete;
+	showUploadDialog: function(chooser, progress) {
 
-		var uploadForm = document.createElement('form');
-		uploadForm.target = uploadFrame.name;
-		uploadForm.action = this.currentDirectory.fileManager;
-		uploadForm.method = 'post';
-		uploadForm.enctype = 'multipart/form-data';
-		var hidden = document.createElement('input');
-		hidden.type = 'hidden';
-		hidden.name = 'a';
-		hidden.value = 'upload';
-		uploadForm.appendChild(hidden);
-		hidden = document.createElement('input');
-		hidden.type = 'hidden';
-		hidden.name = 'p';
-		hidden.value = (this.currentDirectory.path || '');
-		uploadForm.appendChild(hidden);
+		var form = new Element('form', { 'method': 'post',
+			'action': this.currentDirectory.fileManager,
+			'style': 'padding: 12px;width:300px;' });
 
-		if (/MSIE/.test(navigator.userAgent)) {
-			// For some reason form.enctype doesn't work on IE, despite the docs
-			uploadForm.encoding = 'multipart/form-data';
-			// IE doesn't have iframe onload that works well
-			uploadForm.onsubmit = function(e) {
-					var timer;
-					var checkComplete = function() {
-							try {
-								var state = uploadFrame.contentWindow.document.readyState;
-								if (state == 'complete') {
-									clearInterval(timer);
-									uploadComplete();
-								}
-							} catch(e) { }
-						};
-					timer = setInterval(checkComplete, 10);
-				}.bindAsEventListener(this);
-		}
+		var path = this.currentDirectory.path || '';
+		form.appendChild(new Element('input', { 'type': 'hidden', 'name': 'a',
+			'value': 'upload' }));
+		form.appendChild(new Element('input', { 'type': 'hidden', 'name': 'p',
+			'value': (this.currentDirectory.path || '') }));
 
-		var table = document.createElement('table');
-		var row = table.insertRow(0);
-		var cell = row.insertCell(0);
-		cell.colSpan = 2;
-		cell.innerHTML = '<b>Upload File</b>';
+		var label = new Element('div', { 'style': 'float:left;width:60px;padding-top:3px;' }).update('Files:');
+		form.appendChild(label);
+		var file = new Element('input', { 'type': 'file', 'name': 'i', 'multiple': 'multiple' });
+		form.appendChild(file);
+		form.appendChild(new Element('br'));
+		var buttons = new Element('div', { 'style': 'float:right;' });
+		var cancel = new Element('input', { 'type': 'button', 'value': 'Close', 'class': '_pp_button' });
+		cancel.on('click', function(e) { Dialog.close(); Event.stop(e); }.bindAsEventListener(this));
+		buttons.appendChild(cancel);
+		buttons.appendChild(new Element('input', { 'type': 'submit', 'value': 'Upload Files', 'class': '_pp_button' }));
+		form.appendChild(buttons);
+		form.appendChild(new Element('div', {'style': 'clear:both;' }));
 
-		row = table.insertRow(1);
-		cell = row.insertCell(0);
-		cell.innerHTML = 'File';
-		cell = row.insertCell(1);
-		var input = document.createElement('input');
-		input.type = 'file';
-		input.name = 'i';
-		input.style.width = '200px';
-		cell.appendChild(input);
+		var failed = false;
+		var uploader = new Control.FileUpload(file, {
+				multiple: true,
+				inline: true,
+				batch: true,
+				progress: progress,
+				includeFields: ['a', 'p'],
+				prependPath: path,
+				onFailure: function() {
+					failed = true;
+				},
+				onComplete: function() {
+					if (!failed)
+						Dialog.close();
+				}.bind(this)
+			});
 
-		row = table.insertRow(2);
-		cell = row.insertCell(0);
-		cell.innerHTML = 'New filename';
-		cell = row.insertCell(1);
-		var input = document.createElement('input');
-		input.type = 'text';
-		input.name = 'n';
-		input.style.width = '200px';
-		cell.appendChild(input);
+		var frame = new Element('div', { 'class': '_pp_dialog _pp_panel' });
+		frame.appendChild(new Element('div', { 'class': '_pp_title' }).update('Upload Files'));
+		frame.appendChild(form);
 
-		var upload = document.createElement('input');
-		upload.type = 'submit';
-		upload.value = 'Upload';
-		upload.style.marginRight = '5px';
+		var dialog = new Dialog.HTML(frame, {
+				onClose: function() {
+					this.refresh();
+				}.bind(this)
+			});
+		dialog.show();
 
-		var cancel = document.createElement('input');
-		cancel.type = 'button';
-		cancel.value = 'Cancel';
-		cancel.onclick = function(e) { Element.remove(prompt); Event.stop(e); };
-
-		row = table.insertRow(3);
-		cell = row.insertCell(0);
-		cell.innerHTML = '&nbsp;';
-		cell = row.insertCell(1);
-		cell.appendChild(upload);
-		cell.appendChild(cancel);
-
-		uploadForm.appendChild(table);
-		prompt.appendChild(uploadForm);
-
-		this.element.appendChild(prompt);
-		this.prompt = prompt;
-
-		prompt.style.top = Math.round((this.element.offsetHeight - prompt.offsetHeight) / 2) + 'px';
-		prompt.style.left = Math.round((this.element.offsetWidth - prompt.offsetWidth) / 2) + 'px';
-
-		Form.focusFirstElement(uploadForm);
 	},
 
 	showDeleteDialog: function() {
@@ -561,8 +621,18 @@ Control.FileChooserPanel.prototype = {
 	},
 
 	showPreview: function(url) {
-		var image = document.createElement('img');
+
+		// Clear preview pane
+		while(this.filePreview.firstChild)
+			Element.remove(this.filePreview.firstChild);
+
+		var ext = url.substring(url.lastIndexOf('.')+1);
+		if (!ext || !$w('jpeg jpg gif png bmp').include(ext.toLowerCase()))
+			return;
+
+		var image = new Element('img');
 		var loaded = false;
+
 		image.onload = function(e) {
 				// Event fires again when adding to the preview frame
 				if (!loaded) {
@@ -570,10 +640,6 @@ Control.FileChooserPanel.prototype = {
 
 					var origWidth = image.width;
 					var origHeight = image.height;
-
-					// Clear preview pane
-					while(this.filePreview.firstChild)
-						Element.remove(this.filePreview.firstChild);
 
 					// Figure out maximum dimensions and current ratios
 					var maxWidth = this.filePreview.offsetWidth - 6;
@@ -591,17 +657,19 @@ Control.FileChooserPanel.prototype = {
 					}
 
 					// Add to preview pane
-					image.style.position = 'absolute';
-					image.style.top = Math.round((maxHeight - image.height) / 2) + 'px';
-					image.style.left = Math.round((maxWidth - image.width) / 2) + 'px';
-					image.style.backgroundColor = '#FFFFFF';
-					image.border = 1;
+					image.setStyle({
+						'position': 'absolute',
+						'top': Math.round((maxHeight - image.height) / 2) + 'px',
+						'left': Math.round((maxWidth - image.width) / 2) + 'px',
+						'backgroundColor': '#FFFFFF',
+						'border': 1});
 					this.filePreview.appendChild(image);
 
 					if (this.options.previewListener)
 						this.options.previewListener(origWidth, origHeight);
 				}
 			}.bindAsEventListener(this);
+
 		image.onerror = function(e) {
 				// Clear preview pane
 				while(this.filePreview.firstChild)
@@ -609,28 +677,27 @@ Control.FileChooserPanel.prototype = {
 				if (this.options.previewListener)
 					this.options.previewListener('', '');
 			}.bindAsEventListener(this);
+
 		image.src = url;
+
 	},
 
 	createFileRow: function(record, table) {
 		var row = table.insertRow(table.rows.length);
 
 		var cell = row.insertCell(0);
-		cell.className = 'filerow';
+		cell.className = '_pp_filechooser_filerow';
 		cell.width = 10;
-		var icon = document.createElement('img');
-		icon.src = this.options[(record.image || record.type) + 'Image'];
-		cell.appendChild(icon);
+		cell.appendChild(new Element('img',
+			{'src': this.options[(record.image || record.type) + 'Image']}));
 
 		cell = row.insertCell(1);
-		cell.className = 'filerow';
-		var fileName = document.createElement('div');
-		fileName.style.overflow = 'hidden';
-		fileName.innerHTML = record.name;
-		cell.appendChild(fileName);
+		cell.className = '_pp_filechooser_filerow';
+		cell.appendChild(new Element('div', {'style': 'overflow:hidden;'})
+			.update(record.name));
 
 		cell = row.insertCell(2);
-		cell.className = 'filerow';
+		cell.className = '_pp_filechooser_filerow';
 		cell.align = 'right';
 
 		if (record.size !== undefined) {
@@ -699,10 +766,12 @@ Control.FileChooserPanel.prototype = {
 							this.showDeleteDialog();
 							break;
 						case Event.KEY_RETURN:
-							if (this.selectedFile.type == 'file')
-								this.fileOpenListener(this.selectedFile)();
-							else
-								this.directoryOpenListener(this.selectedFile)();
+							if (this.selectedFile) {
+								if (this.selectedFile.type == 'file')
+									this.fileOpenListener(this.selectedFile)();
+								else
+									this.directoryOpenListener(this.selectedFile)();
+							}
 							break;
 						case Event.KEY_UP:
 							var idx = this.selectedIndex() - 1;
@@ -745,10 +814,10 @@ Control.FileChooserPanel.prototype = {
 	selectRow: function(record) {
 		if (this.selectedFile != record) {
 			if (this.selectedFile)
-				Element.removeClassName(this.selectedFile.element, 'selected')
+				Element.removeClassName(this.selectedFile.element, '_pp_highlight')
 
 			this.selectedFile = record;
-			Element.addClassName(record.element, 'selected')
+			Element.addClassName(record.element, '_pp_highlight')
 			if (record.url) {
 				this.showPreview(record.url);
 				if (this.options.standalone)
@@ -775,7 +844,6 @@ Control.FileChooserPanel.prototype = {
 		return -1;
 	}
 
-};
+});
 
-if (typeof Protoplasm != 'undefined')
-	Protoplasm.register('filechooser', Control.FileChooser);
+Protoplasm.register('filechooser', Control.FileChooser);

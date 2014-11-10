@@ -9,13 +9,15 @@ Control.DatePicker.Language['cs'] = {
 		'Time': 'Čas',
 		'Exact minutes': 'Přesné minuty',
 		'Select Date and Time': 'Zvolit datum a čas',
+		'Select Time': 'Zvolit čas',
 		'Open calendar': 'Otevřít kalendář'
 	}
 };
 
 Control.DatePicker.Locale['cs_CZ'] = {
-	dateTimeFormat: 'dd.MM.yyyy HH:mm',
+	dateTimeFormat: 'dd.MM.yyyy HH:mm:ss',
 	dateFormat: 'dd.MM.yyyy',
+	timeFormat: 'HH:mm:ss',
 	firstWeekDay: 1,
 	weekend: [0,6],
 	language: 'cs'

@@ -1,18 +1,16 @@
-/*
- * Control.RatingBar
- * 
- * Create a click-a-star style rating bar.
- *
- * Written and maintained by Jeremy Jongsma (jeremy@jongsma.org)
- */
+if (typeof Protoplasm == 'undefined')
+	throw('protoplasm.js not loaded, could not intitialize ratingbar');
 if (window.Control == undefined) Control = {};
 
-Control.RatingBar = Class.create();
-Control.RatingBar.prototype = {
-	initialize: function (element, options) {
+Protoplasm.loadStylesheet('rating.css', 'ratingbar');
 
-		if (typeof Protoplasm != 'undefined')
-			Protoplasm.loadStylesheet('rating.css', 'ratingbar');
+/**
+ * class Control.RatingBar
+ * 
+ * Create a click-a-star style rating bar.
+**/
+Control.RatingBar = Class.create({
+	initialize: function (element, options) {
 
 		this.element = $(element);
 		this.stars = [];
@@ -51,7 +49,7 @@ Control.RatingBar.prototype = {
 		if (!this.element.childNodes.length) {
 			// Not prepopulated, setup the star divs
 			for (var i = this.options.min; i <= this.options.max; ++i) {
-				var star = document.createElement('div');
+				var star = new Element('div');
 				star.addClassName(this.options.starClass);
 				this.element.appendChild(star);
 			}	
@@ -144,7 +142,6 @@ Control.RatingBar.prototype = {
 			$(this.loading).remove();
 		}
 	}
-};
+});
 
-if (typeof Protoplasm != 'undefined')
-	Protoplasm.register('ratingbar', Control.RatingBar);
+Protoplasm.register('ratingbar', Control.RatingBar);

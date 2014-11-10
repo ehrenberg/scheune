@@ -1,13 +1,13 @@
-/*
- * Control.Ticker
+if (typeof Protoplasm == 'undefined')
+	throw('protoplasm.js not loaded, could not intitialize ticker');
+if (typeof Control == 'undefined') Control = {};
+
+/**
+ * class Control.Ticker
  * 
  * Creates a scrolling ticker (for stock quotes, etc) out of a series
  * of elements.
- *
- * Written and maintained by Jeremy Jongsma (jeremy@jongsma.org)
- */
-if (typeof Control == 'undefined') Control = {};
-
+**/
 Control.TickerBase = Class.create({
 
 	initialize: function(element, generator, options) {
@@ -62,5 +62,4 @@ Control.Ticker = Class.create(Control.TickerBase, {
 }
 });
 
-if (typeof Protoplasm != 'undefined')
-	Protoplasm.register('ticker', Control.Ticker);
+Protoplasm.register('ticker', Control.Ticker);

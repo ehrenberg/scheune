@@ -1,15 +1,14 @@
-/*
- * Control.Accordion
- * 
- * Slides titles up and down to reveal different sections of content.
- *
- * Written and maintained by Jeremy Jongsma (jeremy@jongsma.org)
- * Some parts copyright 2005 Sabre Airline Solutions
- */
+if (typeof Protoplasm == 'undefined')
+	throw('protoplasm.js not loaded, could not intitialize accordion');
 if (window.Control == undefined) Control = {};
 
-Control.Accordion = Class.create();
-Control.Accordion.prototype = {
+/**
+ * class Control.Accordion
+ * 
+ * Stacked title bars slide up and down to reveal different
+ * sections of content.
+**/
+Control.Accordion = Class.create({
 
 	initialize: function(container, options) {
 		this.container = $(container);
@@ -102,10 +101,9 @@ Control.Accordion.prototype = {
 		return kids;
 	}
 
-};
+});
 
-Control.Accordion.Tab = Class.create();
-Control.Accordion.Tab.prototype = {
+Control.Accordion.Tab = Class.create({
 
 	initialize: function(accordion, titleBar, content) {
 		this.accordion = accordion;
@@ -158,7 +156,7 @@ Control.Accordion.Tab.prototype = {
 		this.titleBar.onmouseover = this.hover.bindAsEventListener(this);
 		this.titleBar.onmouseout = this.unhover.bindAsEventListener(this);
 	}
-};
+});
 
 Control.Accordion.Animation = Class.create({
 
@@ -216,5 +214,4 @@ Control.Accordion.Animation = Class.create({
 
 });
 
-if (typeof Protoplasm != 'undefined')
-	Protoplasm.register('accordion', Control.Accordion);
+Protoplasm.register('accordion', Control.Accordion);

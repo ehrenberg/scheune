@@ -15,9 +15,9 @@ Control.DatePicker.Language.ru = {
 };
 
 Control.DatePicker.Locale.ru_RU = {
-	dateTimeFormat: 'dd.MM.yyyy HH:mm',
+	dateTimeFormat: 'dd.MM.yyyy HH:mm:ss',
 	dateFormat: 'dd.MM.yyyy',
-	timeFormat: 'HH:mm',
+	timeFormat: 'HH:mm:ss',
 	use24hrs: true,
 	firstWeekDay: 1,
 	weekend: [0, 6],

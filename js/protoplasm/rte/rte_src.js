@@ -1,5 +1,13 @@
-/*
- * Control.RTE
+if (typeof Protoplasm == 'undefined')
+	throw('protoplasm.js not loaded, could not intitialize rte');
+if (typeof Control == 'undefined') Control = {};
+
+Protoplasm.use('colorpicker');
+Protoplasm.use('filechooser');
+Protoplasm.loadStylesheet('rte.css', 'rte');
+
+/**
+ * class Control.RTE
  *
  * An in-browser WYSIWYG rich text editor for IE 6+, Firefox 1.0+.
  * Designed for AJAX applications based on the Prototype library.
@@ -11,17 +19,9 @@
  *  - Use external hooks for showing directory lists for
  *    inserting images
  *
- * Written and maintained by Jeremy Jongsma (jeremy@jongsma.org)
- * Inspired by / forked from original Control.RTE by Kevin Roth (kevin@kevinroth.com)
- */
-if (typeof Control == 'undefined') Control = {};
-if (typeof Protoplasm != 'undefined') {
-	Protoplasm.use('colorpicker');
-} else {
-	 if (typeof Control.ColorPicker.Panel == 'undefined')
-		throw('RTE requires the colorpicker control');
-}
-
+ * Example: <a href="http://jongsma.org/software/protoplasm/control/rte">Rich
+ * Text Editor demo</a>
+**/
 Control.RTE = Class.create();
 
 Object.extend(Control.RTE, {
@@ -43,8 +43,6 @@ Object.extend(Control.RTE, {
 				ImageBrowser: new Control.RTE.Dialog.ImageBrowser(),
 				InsertTable: new Control.RTE.Dialog.InsertTable()
 			}
-			if (typeof Protoplasm != 'undefined')
-				Protoplasm.loadStylesheet('rte.css', 'rte');
 		}
 	},
 
@@ -84,8 +82,7 @@ Control.RTE.prototype = {
 			if (!/\/$/.test(includePath)) includePath += '/';
 			Control.RTE.includePath = includePath || '';
 		} else {
-			if (typeof Protoplasm != 'undefined')
-				Control.RTE.includePath = Protoplasm.base('rte')+'images/';
+			Control.RTE.includePath = Protoplasm.base('rte')+'images/';
 		}
 
 		this.toolbarStyle = this.options.toolbarStyle;
@@ -1564,7 +1561,7 @@ Object.extend(Control.RTE.Dialog.ImageBrowser.prototype, {
 
 	refresh: function(options) {
 		this.imageForm.reset();
-		if (options && options.fileLister && typeof Control.FileChooser.Panel != 'undefined') {
+		if (options && options.fileLister && typeof Control.FileChooser != 'undefined') {
 			if (!this.browser) {
 				this.browser = new Control.FileChooser.Panel(null, {
 							className: 'rteFileChooser',
@@ -1699,5 +1696,4 @@ Object.extend(Control.RTE.Dialog.ImageBrowser.prototype, {
 
 });
 
-if (typeof Protoplasm != 'undefined')
-	Protoplasm.register('rte', Control.RTE);
+Protoplasm.register('rte', Control.RTE);

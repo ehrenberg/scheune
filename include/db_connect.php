@@ -1,6 +1,7 @@
 <?php
-include_once 'config.inc.php';
-include_once 'class/mysqli.class.php';
+
+include('config.inc.php');
+include($_SERVER['DOCUMENT_ROOT'].'/scheune/class/mysqli.class.php');
 $db		= new MysqliDb(HOST,USER,PASSWORD,DATABASE);
 $mysqli = new mysqli(HOST, USER, PASSWORD, DATABASE);
 $mysqli->query("set names 'utf8'");
@@ -17,9 +18,11 @@ if (!isset($_SERVER['HTTP_X_FORWARDED_FOR'])) {
 $cols		= array("playerText");
 $settings	= $db->getOne(T_SETTINGS, null, $cols);
 
+
 /*
  *	FUNCTIONS
  */
+ 
 function checkVar($var) {
 	$var = str_replace("\n", " ", $var);
 	$var = str_replace(" ", "", $var);

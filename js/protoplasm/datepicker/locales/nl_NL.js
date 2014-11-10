@@ -14,8 +14,9 @@ Control.DatePicker.Language['nl'] = {
 };
 
 Control.DatePicker.Locale['nl_NL'] = { 
-	dateTimeFormat: 'dd-MM-yyyy HH:mm', 
+	dateTimeFormat: 'dd-MM-yyyy HH:mm:ss', 
 	dateFormat: 'dd-MM-yyyy', 
+	timeFormat: 'HH:mm:ss',
 	firstWeekDay: 1, 
 	weekend: [0,6], 
 	language: 'nl'

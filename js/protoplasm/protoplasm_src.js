@@ -33,7 +33,7 @@ if (typeof Protoplasm == 'undefined') {
 		var scriptyUrl = 'https://ajax.googleapis.com/ajax/libs/scriptaculous/'
 			+REQUIRED_SCRIPTACULOUS+'/';
 
-		var full = source = loaded = failed = false;
+		var full = source = loaded = failed = used = false;
 		var path;
 		var scripts = [];
 		var pending = [];
@@ -93,12 +93,13 @@ if (typeof Protoplasm == 'undefined') {
 					// Full version, no need to include
 					if (matches[1] == '_full') {
 						full = true;
+						Protoplasm.loadStylesheet(path+'protoplasm_full.css');
 						return;
 					}
 					if (matches[1] == '_src')
 						source = true;
-					var controls = (includes ? includes[1].split(',') : pending);
-					if (controls) controls.each(Protoplasm.use)
+					var toload = (includes ? includes[1].split(',') : pending);
+					if (toload) toload.each(Protoplasm.use)
 				});
 			},
 
@@ -112,7 +113,7 @@ if (typeof Protoplasm == 'undefined') {
 **/
 			loadStylesheet: function(stylesheet, control) {
 				if (control)
-					stylesheet = Protoplasm.full
+					stylesheet = full
 						? path+'/protoplasm_full.css'
 						: path+control+'/'+stylesheet;
 				if (!$$('head link[rel=stylesheet]').find(function(s) {
@@ -213,17 +214,33 @@ if (typeof Protoplasm == 'undefined') {
  * Include a control for use in the current page.
 **/
 			use: function(control, callback) {
-				if (Object.isArray(control))
+				if (Object.isArray(control)) {
 					control.each(Protoplasm.use);
+					return;
+				}
 				if (failed)
 					throw("Protoplasm loading failed, cannot include controls");
 				else if (!loaded)
 					pending.push(control);
-				else if (!Protoplasm.full && !(control in controls))
+				else if (!full && !(control in controls)) {
+					used || Protoplasm.loadStylesheet(path+'protoplasm.css');
+					used = true;
 					Protoplasm.require(path+control+'/'+control+(source?'_src':'')+'.js', callback);
+				}
 				return new Protoplasm.Transformer(control);
 			},
 
+/**
+ * Protoplasm.useScriptaculous(lib[, callback]) -> null
+ * - lib (String): The script.aculo.us library to load
+ * - callback (Function): A callback function that will be called when the
+ *   library is ready to use.
+ *
+ * Include a script.aculo.us library.
+ *
+ * 	// Load script.aculo.us effects.js
+ * 	Protoplasm.useScriptaculous('effects');
+**/
 			useScriptaculous: function(lib, callback) {
 				Protoplasm.require(scriptyUrl+lib+'.js', callback);
 			},
@@ -268,6 +285,52 @@ if (typeof Protoplasm == 'undefined') {
 						return Protoplasm.transform.apply(Protoplasm, args);
 					}
 				}
+			},
+
+/**
+ * Protoplasm.extend(element, methods) -> Element
+ * - element (Element | String): The element to extend
+ * - methods (Hash): A hash of methods to extend the element with
+ *
+ * Adds the given methods to `element` in a reversible way.
+ *
+ * See [[Protoplasm.revert]]
+**/
+			extend: function(e, x) {
+				e = $(e);
+				x = $H(x);
+				x.each(function(i) {
+					if (i.key in e)
+						e['_'+i.key] = e[i.key];
+					e[i.key] = i.value;
+				});
+				e.store('_extensions', x);
+				return e;
+			},
+
+/**
+ * Protoplasm.revert(element) -> Element
+ * - element (Element | String): The element to revert
+ *
+ * Reverts an element that was previously extended with
+ * [[Protoplasm.extend]] to its original state.
+ *
+ * See [[Protoplasm.extend]]
+**/
+			revert: function(e) {
+				e = $(e);
+				var ext = e.retrieve('_extensions');
+				if (ext) {
+					ext.each(function(i) {
+						if ('_'+i.key in e) {
+							e[i.key] = e['_'+i.key];
+							e['_'+i.key] = null;
+						} else {
+							e[i.key] = null;
+						}
+					});
+				}
+				return e;
 			}
 
 		}
@@ -286,7 +349,7 @@ Protoplasm.load();
 **/
 
 /** section: Controls
- * class Control
+ * Control
  *
  * Namespace for all Protoplasm user input controls.
 **/

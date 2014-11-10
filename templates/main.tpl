@@ -5,8 +5,19 @@
 	<title>{TITLE}</title>
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 	<script type="text/javascript" src="http://code.jquery.com/jquery-1.11.1.min.js"></script>
-	<script type="text/javascript" src="jPlayer/js/jquery.jplayer.min.js"></script>
-	<link rel="stylesheet" href="css/style.css" />
+	<link rel="stylesheet" href="css/style.css"/>
+	<script type="text/JavaScript" src="js/sha512.js"></script>
+	<script type="text/JavaScript" src="js/forms.js"></script>
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-53856519-2', 'auto');
+  ga('send', 'pageview');
+
+</script>
 </head>
 <body>
 <div id="container">
@@ -31,6 +42,7 @@
 			<a href="termine.php"><li>Termine</li></a>
 			<a href="toplist.php"><li>TOP 20 - Vote</li></a>
 			<a href="info.php"><li>Info</li></a>
+			<a href="member.php"><li>Member</li></a>
 		</ul>
 		<div class="clear"></div>
 	</div>

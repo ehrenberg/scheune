@@ -1,7 +1,7 @@
 <?php
-require_once('db_connect.php');
+require_once('include/db_connect.php');
 require_once('class/Template.class.php');
-include_once('Functions.inc.php');
+include_once('include/functions.inc.php');
 
 if(isset($_GET['p'])) {
 	$p = $_GET['p'];

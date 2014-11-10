@@ -81,9 +81,9 @@ div#navigation ul {
 div#navigation ul li {
 	float:left;
 	padding:7px;
-	font-size:16px;
-	margin:5px;
-	margin-bottom:-2px;
+	font-size:14px;
+	margin:3px;
+	margin-bottom:-1px;
 	border:2px solid #CCC;
 	-webkit-border-top-left-radius: 10px;
 	-webkit-border-top-right-radius: 10px;
@@ -109,6 +109,7 @@ div#content {
 	padding:7px;
 	border-top:2px solid #CCC;
 	border-bottom:2px solid #CCC;
+	font-size:13px;
 }
 
 span.highlight {
@@ -254,4 +255,72 @@ div#footer ul li {
 div#footer span.right {
 	float:right;
 	margin-right:10px;
+}
+
+
+/*
+ * REGISTRIERUNG
+ */
+table.standard tr td input[type=text], input[type=password] {
+	margin: 2px;
+	padding: 3px 5px;
+	width: 250px;
+	
+	color: #303030;
+	background: white;
+	border: 1px solid;
+	border-color: #c4c4c4 #d1d1d1 #d4d4d4;
+}
+table.standard tr td input[type=text]:focus, input[type=password]:focus {
+	border-color: #7dc9e2;
+	outline-color: #dceefc;
+	outline-offset: 0;
+}
+table.standard tr td input[type=button] {
+	width:100%;
+}
+
+
+ul.bedingungen {
+	margin:5px;
+	text-align:left;
+	list-style-type:none;
+}
+ul.bedingungen ol {
+	padding-left:30px;
+}
+
+/*
+ * Menü
+ */
+
+div#profilemenue {
+	display:block;
+	border:1px solid #000;
+	margin-bottom:10px;
+}
+
+div#profilemenue ul {
+	list-style-type:none;
+}
+
+div#profilemenue ul li {
+	float:left;
+	text-align:center;
+	background-color:#4D2209;
+}
+div#profilemenue ul li.selected {
+	background-color: #400000;
+}
+
+div#profilemenue ul li a {
+	display:block;
+	line-height:30px;
+	border-right:1px solid #CCCCCC;
+	font-size:13px;
+	font-weight:bold;
+	text-decoration:none;
+}
+div#profilemenue ul li a:hover {
+	background-color: #21150E;
 }

@@ -15,9 +15,9 @@ Control.DatePicker.Language['fr'] = {
 };
 
 Control.DatePicker.Locale['fr_FR'] = {
-	dateTimeFormat: 'dd/MM/yyyy HH:mm',
+	dateTimeFormat: 'dd/MM/yyyy HH:mm:ss',
 	dateFormat: 'dd/MM/yyyy',
-	timeFormat: 'HH:mm',
+	timeFormat: 'HH:mm:ss',
 	firstWeekDay: 1,
 	weekend: [0,6],
 	language: 'fr'

@@ -16,6 +16,7 @@ Control.DatePicker.Language['pl'] = {
 Control.DatePicker.Locale['pl_PL'] = {
 	dateTimeFormat: 'yyyy-MM-dd HH:mm:ss',
 	dateFormat: 'yyyy-MM-dd',
+	timeFormat: 'HH:mm:ss',
 	firstWeekDay: 1,
 	weekend: [0,6],
 	language: 'pl'

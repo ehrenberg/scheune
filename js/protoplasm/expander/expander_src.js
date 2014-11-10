@@ -1,14 +1,13 @@
-/*
- * Control.Expander
- * 
- * Expands / hides a content panel when the header is clicked. 
- *
- * Written and maintained by Jeremy Jongsma (jeremy@jongsma.org)
- */
+if (typeof Protoplasm == 'undefined')
+	throw('protoplasm.js not loaded, could not intitialize expander');
 if (window.Control == undefined) Control = {};
 
-Control.Expander = Class.create();
-Control.Expander.prototype = {
+/**
+ * class Control.Expander
+ * 
+ * Expands / hides a content panel when the header is clicked. 
+**/
+Control.Expander = Class.create({
 	initialize: function(container, options) {
 		this._initialize(container, options);
 	},
@@ -70,7 +69,6 @@ Control.Expander.prototype = {
 	restore: function() {
 		Element.removeClassName(this.title, this.options.hoverClass);
 	}
-}
+});
 
-if (typeof Protoplasm != 'undefined')
-	Protoplasm.register('expander', Control.Expander);
+Protoplasm.register('expander', Control.Expander);

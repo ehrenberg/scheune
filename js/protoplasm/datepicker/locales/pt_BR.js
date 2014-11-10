@@ -14,8 +14,9 @@ Control.DatePicker.Language['pt'] = {
 };
 
 Control.DatePicker.Locale['pt_BR'] = {
-	dateTimeFormat: 'dd-MM-yyyy HH:mm', 
+	dateTimeFormat: 'dd-MM-yyyy HH:mm:ss', 
 	dateFormat: 'dd/MM/yyyy', 
+	timeFormat: 'HH:mm:ss',
 	firstWeekDay: 1, 
 	weekend: [0,6], 
 	language: 'pt'

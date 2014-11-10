@@ -8,7 +8,7 @@ class tpl {
 
     function tpl($tplurl) {
         $this->tpl = array();
-        $line_arr = file($_SERVER['DOCUMENT_ROOT']."scheune/templates/".$tplurl);
+        $line_arr = file("templates/".$tplurl);
         $aktindex = ""; //Index am Anfang leer
         foreach ($line_arr as $line) {
             $templine = trim($line);
@@ -31,13 +31,42 @@ class tpl {
         }
     }
 
+    function fill_tpl($name, $se, $re = "", $cmd = true) {
+		//Übergabe von zwei Scalaren. Werden einfach in eine Array-Struktur
+		//gebracht, um die nächstfolgende Bedingung zu erfüllen
+		if ((is_string($se) and is_string($re)) and ($se)) {
+			 $se = array($se => $re);
+			 $re = "";
+		}
+
+		if ($re === "" and $cmd == true) {
+			$search = array();
+			foreach (array_keys($se) as $sg) {
+				$search[] = '{' . strtoupper($sg) . '}';
+			}
+			return str_replace($search, array_values($se), $this->tpl[$name]);
+		} else if ($re === "" and $cmd == false) {
+			return str_replace(array_keys($se), array_values($se), $this->tpl[$name]);
+		} else if (is_array($re) and $cmd == true) {
+			$search = array();
+			foreach ($se as $sg) {
+				$search[] = '{' . strtoupper($sg) . '}';
+			}
+			return str_replace($search, $re, $this->tpl[$name]);
+		} else if ($re !== "" and $cmd == true) {
+			$se = '{' . strtoupper($se) . '}';
+		}
+		
+		return str_replace($se, $re, $this->tpl[$name]);
+    }
+	
 	/*
 	 * Save Template
 	 */
 	function save_tpl($name,$tag, $new) {
 		$on			= false;
 		
-		$line_arr	= file($_SERVER['DOCUMENT_ROOT']."scheune/templates/".$name);
+		$line_arr	= file("templates/".$name);
 		$line_count	= count($line_arr);
 		$new_arr	= preg_split("/\r\n|\n|\r/", $new); //Text zu Array
 		array_unshift($new_arr, "[".$tag."]\n\r");
@@ -74,7 +103,7 @@ class tpl {
 		//Arrays zusammenführen
 		$line_arr	= array_merge($new_arr, $line_arr);
 		//Datei neu schreiben
-		$fp			= fopen($_SERVER['DOCUMENT_ROOT']."scheune/templates/".$name, 'w');
+		$fp			= fopen($_SERVER['DOCUMENT_ROOT']."/schuppen/templates/".$name, 'w');
 		foreach($line_arr as $line) {
 			fputs($fp, $line.PHP_EOL);
 		}
@@ -84,35 +113,6 @@ class tpl {
 		$this->tpl($name);
 		
 		return true;
-    }
-	
-    function fill_tpl($name, $se, $re = "", $cmd = true) {
-		//Übergabe von zwei Scalaren. Werden einfach in eine Array-Struktur
-		//gebracht, um die nächstfolgende Bedingung zu erfüllen
-		if ((is_string($se) and is_string($re)) and ($se)) {
-			 $se = array($se => $re);
-			 $re = "";
-		}
-
-		if ($re === "" and $cmd == true) {
-			$search = array();
-			foreach (array_keys($se) as $sg) {
-				$search[] = '{' . strtoupper($sg) . '}';
-			}
-			return str_replace($search, array_values($se), $this->tpl[$name]);
-		} else if ($re === "" and $cmd == false) {
-			return str_replace(array_keys($se), array_values($se), $this->tpl[$name]);
-		} else if (is_array($re) and $cmd == true) {
-			$search = array();
-			foreach ($se as $sg) {
-				$search[] = '{' . strtoupper($sg) . '}';
-			}
-			return str_replace($search, $re, $this->tpl[$name]);
-		} else if ($re !== "" and $cmd == true) {
-			$se = '{' . strtoupper($se) . '}';
-		}
-		
-		return str_replace($se, $re, $this->tpl[$name]);
     }
 
     function fill_rowtpl($name, $se, $re = "", $cmd = true) {
@@ -166,29 +166,6 @@ class tpl {
         $this->lbr[$name]['lbr_pattern'] = $lbp;
         $this->lbr[$name]['cells_per_row'] = $cpr;
         $this->lbr[$name]['empty_cells'] = $ecp;
-    }
-	
-	//Template-Funktion
-	function tpl_func($func_name) {
-        $func_file = DIR_PLUGINS.$func_name.'.php';
-		
-        if(!is_file($func_file)) {
-			return('Nicht Vorhanden: ' . $func_name.'<br />');
-		}
-
-        include_once($func_file);
- 
-        $code = "return $func_name(";
-        if(func_num_args() > 1) {
-            $args = array_slice(func_get_args(), 1);
-            for($x=0; $x<count($args); $x++) {
-                if($x>0) $code .= ',';
-                $code .= '$args[' . $x . ']';
-            }
-        }
-        $code .= ");";
- 
-        return eval($code);
     }
 	
 }

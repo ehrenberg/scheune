@@ -1,21 +1,21 @@
-/*
- * Control.LiveGrid
+if (typeof Protoplasm == 'undefined')
+	throw('protoplasm.js not loaded, could not intitialize livegrid');
+if (window.Control == undefined) Control = {};
+
+Protoplasm.loadStylesheet('livegrid.css', 'livegrid');
+
+/**
+ * class Control.LiveGrid
  * 
  * Transforms a table into a dynamically updating, scrolling viewport
  * that can be populated via AJAX queries.
  *
- * Written and maintained by Jeremy Jongsma (jeremy@jongsma.org)
- * Some parts copyright 2005 Sabre Airline Solutions
- */
-if (window.Control == undefined) Control = {};
-
-Control.LiveGrid = Class.create();
-Control.LiveGrid.prototype = {
+ * Example: <a href="http://jongsma.org/software/protoplasm/control/livegrid">Live
+ * Grid demo</a>
+**/
+Control.LiveGrid = Class.create({
 
 	initialize: function(table, visibleRows, totalRows, fetchHandler, options) {
-
-		if (typeof Protoplasm != 'undefined')
-			Protoplasm.loadStylesheet('livegrid.css', 'livegrid');
 
 		if (options == null) options = {};
 
@@ -207,7 +207,7 @@ Control.LiveGrid.prototype = {
 			this.unprocessedRequest = null;
 		}
 	}
-};
+});
 
 // Helper function to allow using LiveGrid functionality with pre-loaded data
 Control.LiveGrid.staticFetchHandler = function(rowdata, columns) {
@@ -258,9 +258,7 @@ Control.LiveGrid.convertToLiveGridRows = function(rows, tableCols) {
 };
 // Control.LiveGrid.MetaData -----------------------------------------------------
 
-Control.LiveGrid.MetaData = Class.create();
-
-Control.LiveGrid.MetaData.prototype = {
+Control.LiveGrid.MetaData = Class.create({
 
 	initialize: function(pageSize, totalRows, columnCount, options) {
 		this.pageSize = pageSize;
@@ -296,13 +294,11 @@ Control.LiveGrid.MetaData.prototype = {
 	getLimitTolerance: function() {
 		return parseInt(this.getLargeBufferSize() * this.options.nearLimitFactor);
 	}
-};
+});
 
 // Control.LiveGrid.Scroller -----------------------------------------------------
 
-Control.LiveGrid.Scroller = Class.create();
-
-Control.LiveGrid.Scroller.prototype = {
+Control.LiveGrid.Scroller = Class.create({
 
 	initialize: function(viewPort, metaData, scrollHandler) {
 		this.metaData = metaData;
@@ -401,13 +397,11 @@ Control.LiveGrid.Scroller.prototype = {
 		if (this.metaData.options.onscrollidle)
 			this.metaData.options.onscrollidle();
 	}
-};
+});
 
 // Control.LiveGrid.Buffer -----------------------------------------------------
 
-Control.LiveGrid.Buffer = Class.create();
-
-Control.LiveGrid.Buffer.prototype = {
+Control.LiveGrid.Buffer = Class.create({
 
 	initialize: function(metaData, viewPort) {
 		this.startPos = 0;
@@ -561,13 +555,11 @@ Control.LiveGrid.Buffer.prototype = {
 		return s.split(" ").join("&nbsp;");
 	}
 
-};
+});
 
 
 //Control.LiveGrid.ViewPort --------------------------------------------------
-Control.LiveGrid.ViewPort = Class.create();
-
-Control.LiveGrid.ViewPort.prototype = {
+Control.LiveGrid.ViewPort = Class.create({
 
 	initialize: function(table, buffer, metaData) {
 
@@ -722,19 +714,17 @@ Control.LiveGrid.ViewPort.prototype = {
 		return parseInt(this.div.style.height);
 	}
 
-};
+});
 
 //------------- Control.LiveGrid.Request
-Control.LiveGrid.Request = Class.create();
-Control.LiveGrid.Request.prototype = {
+Control.LiveGrid.Request = Class.create({
 	initialize: function(requestOffset, options) {
 		this.requestOffset = requestOffset;
 	}
-};
+});
 
 //------------- Control.LiveGrid.Selector
-Control.LiveGrid.Selector = Class.create();
-Control.LiveGrid.Selector.prototype = {
+Control.LiveGrid.Selector = Class.create({
 	initialize: function(table, fetchHandler, metaData) {
 		this.table = table;
 		this.fetchHandler = fetchHandler;
@@ -887,11 +877,10 @@ Control.LiveGrid.Selector.prototype = {
 			}
 		}
 	}
-};
+});
 
 //-------- Control.LiveGrid.Sort
-Control.LiveGrid.Sort = Class.create();
-Control.LiveGrid.Sort.prototype = {
+Control.LiveGrid.Sort = Class.create({
 	initialize: function(table, metaData, sortHandler) {
 		this.table = $(table);
 		this.sortHandler = sortHandler;
@@ -911,16 +900,12 @@ Control.LiveGrid.Sort.prototype = {
 		}
 	},
 	setOptions: function(options) {
+		var base = Protoplasm.base('livegrid');
 		var defaults = {
-			sortAscendImg: 'images/sort_asc.png',
-			sortDescendImg: 'images/sort_desc.png',
+			sortAscendImg: base+'sort_asc.png',
+			sortDescendImg: base+'sort_desc.png',
 			imageWidth: 9,
 			imageHeight: 5};
-		if (typeof Protoplasm != 'undefined') {
-			var base = Protoplasm.base('livegrid');
-			defaults.sortAscendImg = base+'sort_asc.png';
-			defaults.sortDescendImg = base+'sort_desc.png';
-		}
 		this.options = Object.extend(defaults, options);
 
 		// preload the images...
@@ -983,7 +968,6 @@ Control.LiveGrid.Sort.prototype = {
 	executeSort: function() {
 		this.sortHandler(this.sortField, this.sortDirection);
 	}
-};
+});
 
-if (typeof Protoplasm != 'undefined')
-	Protoplasm.register('livegrid', Control.LiveGrid);
+Protoplasm.register('livegrid', Control.LiveGrid);

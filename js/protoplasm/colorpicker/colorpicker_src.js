@@ -1,3 +1,5 @@
+if (typeof Protoplasm == 'undefined')
+	throw('protoplasm.js not loaded, could not intitialize colorpicker');
 if (typeof Control == 'undefined') Control = {};
 
 /**
@@ -12,6 +14,9 @@ if (typeof Control == 'undefined') Control = {};
  *
  * * Allows saving custom colors to the palette for later use
  * * Customizable by CSS
+ *
+ * Example: <a href="http://jongsma.org/software/protoplasm/control/colorpicker">Color
+ * Picker demo</a>
 **/
 Control.ColorPicker = Class.create({
 
@@ -36,34 +41,37 @@ Control.ColorPicker = Class.create({
  *
  * The underlying `<input>` element passed to the constructor.
 **/
-		this.element = $(element);
+		element = $(element);
 
-		if (cp = this.element.retrieve('colorpicker'))
+		if (cp = element.retrieve('colorpicker'))
 			cp.destroy();
 
 		this.options = Object.extend({
-				className: 'colorpickerControl'
 			}, options || {});
 
-		this.colorpicker = new Control.ColorPicker.Panel({
+/**
+ * Control.ColorPicker#panel -> Control.ColorPicker.Panel
+ *
+ * The panel dialog box linked to this control.  This may be
+ * null if the control is not open.
+**/
+		this.panel = new Control.ColorPicker.Panel({
 				onSelect: this.colorSelected.bind(this)
 			});
 
-		if (typeof Protoplasm != 'undefined')
-			Protoplasm.loadStylesheet('colorpicker.css', 'colorpicker');
-
-		this.open = false;
+		this.opened = false;
 		this.dialog = new Element('div', {'style': 'position:absolute;'});
-		var cpCont = new Element('div', { 'class': this.options.className });
-		cpCont.appendChild(this.colorpicker.element);
+		var cpCont = new Element('div', { 'class': '_pp_frame_small '+this.options.className });
+		cpCont.appendChild(this.panel.element);
 		this.dialog.appendChild(cpCont);
 
 		// Wrap element in a relative div to overlay the clickable swatch
-		this.wrapper = this.element.wrap(new Element('div'));
-		this.wrapper.style.position = 'relative';
+		wrapper = element.wrap(new Element('div', {'class': 'inline-block'}));
+		wrapper.style.position = 'relative';
+		wrapper.style.zIndex = '99';
 
 		// Get layout information for the swatch position
-		var layout = this.element.getLayout();
+		var layout = element.getLayout();
 		var size = layout.get('height') - 2;
 		var topPad = layout.get('padding-top');
 		if (topPad < 1) {
@@ -76,35 +84,47 @@ Control.ColorPicker = Class.create({
 		// Create the color swatch
 		this.swatch = new Element('div', {
 			'class': 'inputExtension',
-			'title': 'Open color palette' });
-		this.swatch.setStyle({'border': '1px solid gray',
-			'position': 'absolute',
-			'fontSize': '1px',
-			'width': size + 'px',
-			'height': size + 'px',
-			'backgroundColor': this.element.value });
-		this.wrapper.appendChild(this.swatch);
+			'title': 'Open color palette',
+			'style': 'border:1px solid gray;position:absolute;fontSize:1px;display:inline-block;'
+				+'width:'+size+'px;height:'+size+'px;background-color:'+element.value });
+		element.insert({after: this.swatch});
 
 		// Set the swatch position
-		this.swatch.clonePosition(this.element, {
-			'setWidth': false,
-			'setHeight': false,
-			'offsetTop': topPad + layout.get('border-top'),
-			'offsetLeft': layout.get('padding-box-width') + 1 + layout.get('border-left') });
-		this.oldPadding = this.element.style.paddingRight;
-		this.element.style.paddingRight = (size + 3 + layout.get('padding-left') + rightPad) + 'px';
-		this.element.maxLength = 7;
+		//this.swatch.style.left = layout.get('left') + (layout.get('margin-box-width') + 1 + layout.get('border-left')) + 'px';
+		console.log(layout.get('right'));
+		this.swatch.style.top = (layout.get('top') + topPad + layout.get('border-top')) + 'px';
+		//this.swatch.style.left = (layout.get('left') + layout.get('margin-box-width')) + 'px';
+		this.swatch.style.right = (layout.get('right') - size - 3 + layout.get('border-right')) + 'px';
+		this.oldPadding = element.style.paddingRight;
+		element.style.paddingRight = (size + 3 + layout.get('padding-left') + rightPad) + 'px';
+		element.maxLength = 7;
 
 		this.listeners = [
-			this.element.on('change', this.textChanged.bindAsEventListener(this)),
-			this.element.on('blur',  this.hide.bindAsEventListener(this)),
+			element.on('change', this.textChanged.bindAsEventListener(this)),
+			element.on('blur',  this.close.bindAsEventListener(this)),
 			this.swatch.on('click', this.toggle.bindAsEventListener(this)),
-			this.swatch.on('selectstart', Event.stop)
+			this.swatch.on('selectstart', Event.stop),
+			Event.on(window, 'unload', this.destroy.bind(this))
 		];
 		this.clickListener = null;
 
-		this.element.store('colorpicker', this);
-		this.destructor = Event.on(window, 'unload', this.destroy.bind(this));
+		element.store('colorpicker', this);
+
+		element._show = element.show;
+		element._hide = element.hide;
+
+		// Extend element with public API
+		this.element = Protoplasm.extend(element, {
+			show: wrapper.show.bind(wrapper),
+			hide: wrapper.hide.bind(wrapper),
+			open: this.open.bind(this),
+			toggle: this.toggle.bind(this),
+			close: this.close.bind(this),
+			destroy: this.destroy.bind(this)
+		});
+
+		this.wrapper = wrapper;
+
 	},
 
 /**
@@ -114,20 +134,20 @@ Control.ColorPicker = Class.create({
  * its original behavior.
 **/
 	destroy: function() {
-		for (var i = 0; i < this.listeners.length; i++)
-			this.listeners[i].stop();
+		Protoplasm.revert(this.element);
+		this.listeners.invoke('stop');
 		if (this.clickListener)
 			this.clickListener.stop();
-		this.wrapper.parentNode.replaceChild(this.element, this.wrapper);
-		this.element.style.paddingRight = this.oldPadding;
-		this.element.store('colorpicker', null);
-		this.destructor.stop();
+		var e = this.element;
+		this.wrapper.parentNode.replaceChild(e, this.wrapper);
+		e.style.paddingRight = this.oldPadding;
+		e.store('colorpicker', null);
 	},
 
 	colorSelected: function(color) {
 		this.element.value = color;
 		this.swatch.style.backgroundColor = color;
-		this.hide();
+		this.close();
 	},
 
 	textChanged: function(e) {
@@ -140,41 +160,42 @@ Control.ColorPicker = Class.create({
  * Toggle the visibility of the picker panel for this control.
 **/
 	toggle: function(e) {
-		if (this.open) this.hide();
-		else this.show();
+		if (this.opened) this.close();
+		else this.open();
 	},
 
 /**
- * Control.ColorPicker#show() -> null
+ * Control.ColorPicker#open() -> null
  *
  * Show the picker panel for this control.
 **/
-	show: function(e) {
-		if (!this.open) {
+	open: function(e) {
+		if (!this.opened) {
 			var layout = this.element.getLayout();
-			this.swatch.parentNode.appendChild(this.dialog);
+			document.body.appendChild(this.dialog);
 			var offsetTop = layout.get('border-box-height') - layout.get('border-bottom');
 			this.dialog.clonePosition(this.element, {
 				'setWidth': false,
 				'setHeight': false,
-				'offsetTop': offsetTop});
+				'offsetTop': offsetTop,
+				'offsetLeft': -3});
 			this.clickListener = document.on('click',
 				this.clickHandler.bindAsEventListener(this));
-			this.open = true;
+			this.opened = true;
 		}
 	},
 
 /**
- * Control.ColorPicker#hide() -> null
+ * Control.ColorPicker#close() -> null
  *
  * Hide the picker panel for this control.
 **/
-	hide: function(e) {
-		if (this.open) {
+	close: function(e) {
+		if (this.opened) {
 			if (this.clickListener)
 				this.clickListener.stop();
 			this.dialog.remove();
-			this.open = false;
+			this.opened = false;
 		}
 	},
 
@@ -184,7 +205,7 @@ Control.ColorPicker = Class.create({
 			if (element == this.swatch || element == this.dialog)
 				return;
 		} while (element = element.parentNode);
-		this.hide();
+		this.close();
 	}
 });
 
@@ -400,5 +421,4 @@ Control.ColorPicker.Panel = Class.create({
 
 });
 
-if (typeof Protoplasm != 'undefined')
-	Protoplasm.register('colorpicker', Control.ColorPicker);
+Protoplasm.register('colorpicker', Control.ColorPicker);
