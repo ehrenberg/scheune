@@ -17,7 +17,8 @@ $Template	= new tpl("main.tpl");
 $sere = array (
 		"title"				=> "Rockscheune - Impressum",
 		"inhalt"			=> $inhalt,
-		"playerText"		=> $settings['playerText']
+		"playerText"		=> $settings['playerText'],
+		"member_logout"		=> ''
 );
 echo $Template->fill_tpl("start", $sere);
 ?>

@@ -95,16 +95,16 @@ class member_shoutbox extends plugin {
 		global $pluginSettings;
 		$picpf = $pluginSettings->SmiliePath;
 		
-		$text = str_replace(":)", '<img src="'.$picpf.'/1.gif" alt="Smilie" border="0" />', $text);
-		$text = str_replace(":D", '<img src="'.$picpf.'/2.gif" alt="Smilie" border="0" />', $text);
-		$text = str_replace("8)", '<img src="'.$picpf.'/3.gif" alt="Smilie" border="0" />', $text);
-		$text = str_replace(":eek:", '<img src="'.$picpf.'/4.gif" alt="Smilie" border="0" />', $text);
-		$text = str_replace(":p", '<img src="'.$picpf.'/5.gif" alt="Smilie" border="0" />', $text);
-		$text = str_replace(":(", '<img src="'.$picpf.'/6.gif" alt="Smilie" border="0" />', $text);
-		$text = str_replace(":x", '<img src="'.$picpf.'/7.gif" alt="Smilie" border="0" />', $text);
-		$text = str_replace(":oX:", '<img src="'.$picpf.'/8.gif" alt="Smilie" border="0" />', $text);
-		$text = str_replace(":roll", '<img src="'.$picpf.'/9.gif" alt="Smilie" border="0" />', $text);
-		$text = str_replace(";)", '<img src="'.$picpf.'/10.gif" alt="Smilie" border="0" />', $text);
+		$text = str_replace(":)", '<img src="'.$picpf.'/1.png" alt="Smilie" border="0" />', $text);
+		$text = str_replace(":D", '<img src="'.$picpf.'/2.png" alt="Smilie" border="0" />', $text);
+		$text = str_replace("8)", '<img src="'.$picpf.'/3.png" alt="Smilie" border="0" />', $text);
+		$text = str_replace(":eek:", '<img src="'.$picpf.'/4.png" alt="Smilie" border="0" />', $text);
+		$text = str_replace(":p", '<img src="'.$picpf.'/5.png" alt="Smilie" border="0" />', $text);
+		$text = str_replace(":(", '<img src="'.$picpf.'/6.png" alt="Smilie" border="0" />', $text);
+		$text = str_replace(":x", '<img src="'.$picpf.'/7.png" alt="Smilie" border="0" />', $text);
+		$text = str_replace(":oX:", '<img src="'.$picpf.'/8.png" alt="Smilie" border="0" />', $text);
+		$text = str_replace(":roll", '<img src="'.$picpf.'/9.png" alt="Smilie" border="0" />', $text);
+		$text = str_replace(";)", '<img src="'.$picpf.'/10.png" alt="Smilie" border="0" />', $text);
 
 		return $text;
 	}

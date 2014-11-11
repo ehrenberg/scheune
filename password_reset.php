@@ -50,7 +50,8 @@ if(isset($ID)) {
 
 $sere = array (
 		"title"		=> WEBSITE_NAME." - Passwort zurücksetzen",
-		"inhalt"	=> $inhalt
+		"inhalt"	=> $inhalt,
+		"member_logout"		=> ''
 );
 echo $Template->fill_tpl("main", $sere);
 

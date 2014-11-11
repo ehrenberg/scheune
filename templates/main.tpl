@@ -42,7 +42,8 @@
 			<a href="termine.php"><li>Termine</li></a>
 			<a href="toplist.php"><li>TOP 20 - Vote</li></a>
 			<a href="info.php"><li>Info</li></a>
-			<a href="member.php"><li>Member</li></a>
+			<a href="member.php"><li>Clubhaus</li></a>
+			{MEMBER_LOGOUT}
 		</ul>
 		<div class="clear"></div>
 	</div>

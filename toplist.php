@@ -187,7 +187,8 @@ $Template	= new tpl("main.tpl");
 $sere = array (
 		"title"				=> "Rockscheune - Wenn's nicht rockt, isses für'n Arsch",
 		"inhalt"			=> $inhalt,
-		"playerText"		=> $settings['playerText']
+		"playerText"		=> $settings['playerText'],
+		"member_logout"		=> ''
 );
 echo $Template->fill_tpl("start", $sere);
 ?>

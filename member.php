@@ -74,7 +74,8 @@ $Template	= new tpl("main.tpl");
 $sere = array (
 		"title"				=> "Der Schuppen",
 		"inhalt"			=> $inhalt,
-		"playerText"		=> $settings['playerText']
+		"playerText"		=> $settings['playerText'],
+		"member_logout"		=> '<a href="logout.php"><li>LogOut</li></a>'
 );
 
 echo $Template->fill_tpl("start", $sere);
