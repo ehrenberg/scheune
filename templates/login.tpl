@@ -13,7 +13,7 @@
 		</tr>
 		<tr>
 			<td></td>
-			<td><input class="btn" type="submit" value="Login" onclick="formhash(this.form,this.form.password);" /></td>
+			<td><input class="btn" type="submit" value="Login" onclick="formhash(this.form,this.form.password);" /> <a href="register.php" class="btn">Registrieren</a></td>
 		</tr>
 		<tr>
 			<td><input type="checkbox" name="remember_login" id="remember_login">Angemeldet bleiben?</td>
