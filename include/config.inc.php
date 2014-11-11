@@ -55,10 +55,12 @@ define("T_ABSTIMMUNG_VORSCHLAEGE","abstimmung_vorschlaege");
 define("T_TEMPLATES","templates");
 define("T_SETTINGS","settings");
 
+define("T_SHOUTBOX", "shoutbox");
+
 //Ordner
 define("DIR_PLUGINS","plugins/");
-//define("DIR_ROOT", $_SERVER['DOCUMENT_ROOT']."/scheune");
-define("DIR_ROOT","");
+define("DIR_ROOT", $_SERVER['DOCUMENT_ROOT']."/scheune");
+//define("DIR_ROOT","");
 define("DIR_IMG_ICO", "/img/ico");
 
 //PLUGINS
