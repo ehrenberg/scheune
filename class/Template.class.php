@@ -8,7 +8,7 @@ class tpl {
 
     function tpl($tplurl) {
         $this->tpl = array();
-        $line_arr = file("templates/".$tplurl);
+        $line_arr = file(DIR_ROOT."/templates/".$tplurl);
         $aktindex = ""; //Index am Anfang leer
         foreach ($line_arr as $line) {
             $templine = trim($line);
@@ -66,7 +66,7 @@ class tpl {
 	function save_tpl($name,$tag, $new) {
 		$on			= false;
 		
-		$line_arr	= file("templates/".$name);
+		$line_arr	= file(DIR_ROOT."/templates/".$name);
 		$line_count	= count($line_arr);
 		$new_arr	= preg_split("/\r\n|\n|\r/", $new); //Text zu Array
 		array_unshift($new_arr, "[".$tag."]\n\r");
@@ -103,7 +103,7 @@ class tpl {
 		//Arrays zusammenführen
 		$line_arr	= array_merge($new_arr, $line_arr);
 		//Datei neu schreiben
-		$fp			= fopen($_SERVER['DOCUMENT_ROOT']."/schuppen/templates/".$name, 'w');
+		$fp			= fopen(DIR_ROOT."/templates/".$name, 'w');
 		foreach($line_arr as $line) {
 			fputs($fp, $line.PHP_EOL);
 		}

@@ -192,7 +192,7 @@ function login_check($mysqli) {
 }
 function notLoggedIn() {
 	$_SESSION['openedURL'] = str_replace("/schuppen/","",$_SERVER['REQUEST_URI']);
-	header('Location: login.php');
+	header('Location: '.DIR_ROOT.'/login.php');
 }
 
 /*

@@ -296,7 +296,7 @@ ul.bedingungen ol {
 
 div#profilemenue {
 	display:block;
-	border:1px solid #000;
+	border:2px solid #ccc;
 	margin-bottom:10px;
 }
 
@@ -307,7 +307,7 @@ div#profilemenue ul {
 div#profilemenue ul li {
 	float:left;
 	text-align:center;
-	background-color:#4D2209;
+	background-color:#202020;
 }
 div#profilemenue ul li.selected {
 	background-color: #400000;
@@ -319,6 +319,7 @@ div#profilemenue ul li a {
 	border-right:1px solid #CCCCCC;
 	font-size:13px;
 	font-weight:bold;
+	color:#CCC;
 	text-decoration:none;
 }
 div#profilemenue ul li a:hover {
