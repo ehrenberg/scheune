@@ -1,0 +1,5 @@
+<?xml version='1.0'?>
+<config>
+	<MessageLimit>5</MessageLimit>
+	<SmiliePath>/scheune/plugins/member_shoutbox/smilies</SmiliePath>
+</config>
