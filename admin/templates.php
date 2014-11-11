@@ -1,7 +1,10 @@
 <?php
-require_once('../db_connect.php');
-include_once('../Functions.inc.php');
+include '../include/db_connect.php';
+include '../include/functions.inc.php';
 require_once('../class/Template.class.php');
+require_once( '../class/Plugin.class.php');
+sec_session_start($mysqli);
+if (!login_check($mysqli) OR !admin_check($mysqli)) header('Location: ../member.php');
 
 $inhalt		= null;
 $sere		= array();
@@ -46,36 +49,13 @@ if(isset($_POST['edit_template'])) {
 	header("Location:templates.php?edit_ok");
 }
 
+
+$sere = array (
+		"title"			=> WEBSITE_NAME,
+		"inhalt"		=> $inhalt
+);
+
+$Template			= new tpl("admin.tpl");
+$inhalt = $Template->fill_tpl("start", $sere);
+echo $Template->fill_tpl("main", $sere);
 ?>
-<html>
-<head>
-	<link rel="stylesheet" type="text/css" href="style.css">
-	<script type="text/javascript" src="../js/protoplasm/protoplasm_full.js"></script>
-	<script language="javascript">
-		Protoplasm.use('rte').transform('textarea.richtext');
-	</script>
-</head>
-<body>
-	<div id="container">
-		<div id="header">
-			<h1>Administratorbereich</h1>
-		</div>
-		<div id="navi">
-			<ul>
-				<li><a href="../">Zurück zur Webseite</a></li>
-				<li><a href="index.php">Startseite</a></li>
-				<li><a href="index.php?p=termine">Terminkalendar</a></li>
-				<li><a href="abstimmung.php">Abstimmungen</a></li>
-				<li><a href="vorschlaege.php">Abstimmungen - Vorschläge</a></li>
-				<li><a href="templates.php">Templates</a></li>
-			</ul>
-		</div>
-		<div id="content">
-		<?php
-			echo $inhalt;
-		?>
-		</div>
-		<div class="clear"></div>
-	</div>
-</body>
-</html>

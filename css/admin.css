@@ -180,3 +180,22 @@ div.box_overview span.title {
 	background-color:#E0E0E0;
 	margin:-5px -5px 5px -5px
 }
+
+
+/* 
+ * PLugins
+ */
+ul.pluginList {
+	list-style-type:none;
+}
+ul.pluginList li {
+	border:2px solid #ccc;
+	padding:10px;
+	margin:5px;
+}
+ul.pluginList li span.right{
+	float:right;
+}
+ul.pluginList li a{
+	color:#000;
+}
