@@ -27,18 +27,18 @@ div#container {
  *	HEADER
  */
 div#header {
-	width:900px;
+	width:903px;
 	height:330px;
-	background-image:url('../img/logo-netz.png');
+	background-image:url('../img/logo-netz-2.png');
 	background-repeat:no-repeat;
 	background-position:-10px -15px;
-	margin:2px;
+	margin:15px;
 }
 div#header div#status {
 	border:0px;
 	position:relative;
-	right:12px;
-	top:5px;
+	right:40px;
+	top:2px;
 	float:right;
 }
 div#header div#status iframe.playerstatus {
@@ -52,9 +52,9 @@ div#header div#status iframe.playerstatus {
 }
 div#header div#player {
 	position:relative;
-	right:20px;
-	top:130px;
-	width:160px;
+	right:45px;
+	top:110px;
+	width:130px;
 	float:right;
 	text-align:center;
 	padding:5px;
@@ -81,9 +81,9 @@ div#navigation ul {
 div#navigation ul li {
 	float:left;
 	padding:7px;
-	font-size:14px;
-	margin:3px;
-	margin-bottom:-1px;
+	font-size:16px;
+	margin:5px;
+	margin-bottom:-2px;
 	border:2px solid #CCC;
 	-webkit-border-top-left-radius: 10px;
 	-webkit-border-top-right-radius: 10px;
@@ -109,7 +109,6 @@ div#content {
 	padding:7px;
 	border-top:2px solid #CCC;
 	border-bottom:2px solid #CCC;
-	font-size:13px;
 }
 
 span.highlight {

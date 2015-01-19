@@ -2,8 +2,8 @@ Control.DatePicker.Locale['de_DE'] = {
 	dateTimeFormat: 'dd.MM.yyyy HH:mm', 
 	dateFormat: 'dd.MM.yyyy',
 	use24hrs: true,
-	firstWeekDay: 1, 
-	weekend: [0,6], 
+	firstWeekDay: 0, 
+	weekend: [5,6], 
 	language: 'de'
 };
 

@@ -20,7 +20,7 @@ if(isset($_POST['add_vorschlag'])) {
 	$name	= $_POST['name'];
 
 	//Vorschlag eintragen
-	$data = Array ("Text" => $text, "Name" => $name, "IP" => $client_ip);
+	$data = Array ("Text" => $text, "Name" => $name, "IP" => $client_ip, "ErstelltAm" => date('Y-m-d H:i:s',time()));
 	$id = $db->insert(T_ABSTIMMUNG_VORSCHLAEGE, $data);
 	header("Location:toplist.php?add_vorschlag_ok");
 }
@@ -101,7 +101,7 @@ $cols		= array("ID", "Bezeichnung", "GueltigBis", "Aktiv");
 $db->where("GueltigBis", date('Y-m-d H:i:s',time()), '>=');
 $db->where("Aktiv",true);
 $abstimmungen	= $db->get(T_ABSTIMMUNG, null, $cols);
-if($db->count == 0) $inhalt .= '<div class="alert-box notice">Die letzte Abstimmung ist beendet..</div>';
+if($db->count == 0) $inhalt .= '<div class="alert-box notice">Die aktuelle Abstimmung ist beendet. Euere neue Liste gibt es Montag Mittag. Thx + Rock on!</div>';
 foreach($abstimmungen as $abstimmung) {
 	$gueltigBis = new DateTime($abstimmung['GueltigBis']);
 	
@@ -124,7 +124,7 @@ foreach($abstimmungen as $abstimmung) {
 		}
 	}
 
-	$inhalt .= 'Einem Titel kannst du deine Stimme geben. Einem anderen kannst du die Kugel verpassen.<br /><br />';
+	$inhalt .= 'Vote Deinen Hit und schreibe uns Deinen Vorschlag f&uumlr die TOP 20! Rock on!<br /><br />';
 	$inhalt .= '<h2>'.$abstimmung['Bezeichnung'].'</h2><h4>Bis: '.$gueltigBis->format('d.m.Y H:i').' Uhr</h4>';
 	
 	$cols		= array("ID", "Abstimmung_ID", "Name", "Stimmen");
@@ -187,6 +187,8 @@ $Template	= new tpl("main.tpl");
 $sere = array (
 		"title"				=> "Rockscheune - Wenn's nicht rockt, isses für'n Arsch",
 		"inhalt"			=> $inhalt,
+		"AddCSS"			=> $Template->createStyles('style;screen;iconset'),
+		"AddJS"				=> $Template->createScripts('protoplasm/protoplasm'),
 		"playerText"		=> $settings['playerText'],
 		"member_logout"		=> ''
 );

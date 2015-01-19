@@ -6,9 +6,15 @@ class tpl {
     var $lbr; //Linebreak-options for easy table-handling
 	
 
-    function tpl($tplurl) {
+    function tpl($tplurl, $pluginname = null) {
         $this->tpl = array();
-        $line_arr = file(DIR_ROOT."/templates/".$tplurl);
+        
+		if($pluginname != null) {
+			$line_arr = file(DIR_PLUGINS."/".$pluginname."/templates/".$tplurl);
+		} else {
+			$line_arr = file(DIR_ROOT."/templates/".$tplurl);
+		}
+		
         $aktindex = ""; //Index am Anfang leer
         foreach ($line_arr as $line) {
             $templine = trim($line);
@@ -30,10 +36,10 @@ class tpl {
             }
         }
     }
-
+	
+	
     function fill_tpl($name, $se, $re = "", $cmd = true) {
-		//Übergabe von zwei Scalaren. Werden einfach in eine Array-Struktur
-		//gebracht, um die nächstfolgende Bedingung zu erfüllen
+
 		if ((is_string($se) and is_string($re)) and ($se)) {
 			 $se = array($se => $re);
 			 $re = "";
@@ -56,6 +62,7 @@ class tpl {
 		} else if ($re !== "" and $cmd == true) {
 			$se = '{' . strtoupper($se) . '}';
 		}
+		
 		
 		return str_replace($se, $re, $this->tpl[$name]);
     }
@@ -168,6 +175,39 @@ class tpl {
         $this->lbr[$name]['empty_cells'] = $ecp;
     }
 	
+	
+	
+	function createStyles($stylesheets, $admin = false) {
+		$styles = explode(";",$stylesheets);
+		$ret	= null;
+		
+		if($admin == true) {
+			$admin_path = '../';
+		} else {
+			$admin_path = '';
+		}
+		
+		foreach($styles as $style) {
+			$ret .= '<link type="text/css" rel="stylesheet" href="'.$admin_path.'css/'.$style.'.css" />';
+		}
+		return $ret;
+	}
+	
+	function createScripts($allscripts, $admin = false) {
+		$scripts	= explode(";", $allscripts);
+		$ret		= null;
+		
+		if($admin == true) {
+			$admin_path = '../';
+		} else {
+			$admin_path = '';
+		}
+		
+		foreach($scripts as $script) {
+			$ret .= '<script type="text/javaScript" src="'.$admin_path.'js/'.$script.'.js"></script>';
+		}
+		return $ret;
+	}
+	
 }
-
 ?>

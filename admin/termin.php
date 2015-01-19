@@ -51,7 +51,7 @@ if(isset($_GET['edit'])) {
 	$termine	= $db->get(T_TERMINE, null, $cols);
 	
 	foreach ($termine as $termin) {
-		$inhalt .= '<form method="POST" action="index.php?p=termine"><input type="submit" name="back" value="Zurück"></form>
+		$inhalt .= '<form method="POST" action="index.php?p=termine"><input type="submit" name="back" class="btn lsf" value="back Zurück"></form>
 		<form method="POST">
 			<table class="standard">
 				<tr>
@@ -69,7 +69,7 @@ if(isset($_GET['edit'])) {
 				<tr>
 					<td colspan="2">
 						<input type="hidden" name="id" value="'.$termin['ID'].'">
-						<input type="submit" name="edit" value="Speichern">
+						<input type="submit" name="edit" class="btn lsf" value="save Speichern">
 					</td>
 				</tr>
 			</table>
@@ -119,7 +119,7 @@ if(isset($_POST['add_week'])) {
 
 if(isset($_GET['add']) == 'week') {
 	if(isset($_GET['ok'])) {
-		$inhalt = 'Woche erfolgreich hinzugefügt';
+		$inhalt = '<div class="alert-box success">Woche erfolgreich hinzugefügt</div>';
 	} else {
 		if(isset($_POST['selected'])) {
 			$von		= $_POST['von'];
@@ -129,7 +129,9 @@ if(isset($_GET['add']) == 'week') {
 			$todayDate	= new DateTime($startDate->format('d.m.Y'));
 			$diff		= $startDate->diff($endDate);
 
-			$inhalt .= '<form method="POST"><table class="standard">
+			$inhalt .= '<a href="index.php?p=termine" class="btn lsf">back Zurück</a>
+					<form method="POST">
+						<table class="standard">
 						<thead>
 							<th>Datum</th>
 							<th width="60%">Text</th>
@@ -139,7 +141,7 @@ if(isset($_GET['add']) == 'week') {
 			for($i = 0; $i <= $diff->days; $i++) {
 				$inhalt .= '<tr>
 								<td>'.$todayDate->format('d.m.Y').'</td>
-								<td><input type="text" name="text['.$i.']" style="width:100%;"></td>
+								<td><input type="text" name="text['.$i.']" style="width:90%;"></td>
 								<td><input type="text" size="2" name="von_std['.$i.']">:<input type="text" size="2" name="von_min['.$i.']"></td>
 								<td><input type="text" size="2" name="bis_std['.$i.']">:<input type="text" size="2" name="bis_min['.$i.']"></td>
 							</tr>';
@@ -150,7 +152,7 @@ if(isset($_GET['add']) == 'week') {
 							<td colspan="5">
 								<input type="hidden" name="startDate" value="'.$startDate->format('d.m.Y').'">
 								<input type="hidden" name="endDate" value="'.$endDate->format('d.m.Y').'">
-								<input type="submit" name="add_week" value="Speichern" class="btn">
+								<input type="submit" name="add_week" value="save Speichern" class="btn lsf">
 							</td>
 						</tr></table></form>';
 		} else {
@@ -165,7 +167,7 @@ if(isset($_GET['add']) == 'week') {
 						<td><input type="text" name="bis" class="datepicker"></td>
 					</tr>
 					<tr>
-						<td colspan="2"><input type="submit" name="selected" value="Eintrag für Woche"></td>
+						<td colspan="2"><input type="submit" name="selected" class="lsf" value="calendar Weiter"></td>
 					</tr>
 				</table>
 			</form>';
@@ -173,13 +175,15 @@ if(isset($_GET['add']) == 'week') {
 	}
 }
 
+$Template			= new tpl("admin.tpl");
 
 $sere = array (
 		"title"			=> WEBSITE_NAME,
-		"inhalt"		=> $inhalt
+		"inhalt"		=> $inhalt,
+		"AddCSS"		=> $Template->createStyles('admin;screen;iconset', true),
+		"AddJS"			=> $Template->createScripts('protoplasm/protoplasm', true)
 );
 
-$Template			= new tpl("admin.tpl");
 $inhalt = $Template->fill_tpl("start", $sere);
 echo $Template->fill_tpl("main", $sere);
 ?>

@@ -2,23 +2,20 @@
 /**
  * These are the database login details
  */  
-define("WEBSITE_NAME","Radio - Rockscheune");
-define("VERSION","0.0.1");
-define("VERSION_TEXT","Rockscheune");
-define("HOST", "localhost");     // The host you want to connect to.
-/*define("USER", "web307");
-define("DATABASE", "usr_web307_1");
-define("PASSWORD", "osLF4g2B6d");*/
-define("USER", "root");
-define("DATABASE", "scheune");
-define("PASSWORD", "");
+define("WEBSITE_NAME",	"Radio - Rockscheune");
+define("VERSION",		"0.0.1");
+define("VERSION_TEXT",	"Rockscheune");
+define("HOST",			"localhost");     // The host you want to connect to.
+define("USER",			"root");
+define("DATABASE",		"scheune");
+define("PASSWORD",		"");
 
-define("EMAIL", "mail@radio-rockscheune.de");
+define("EMAIL",			"mail@radio-rockscheune.de");
  
-define("CAN_REGISTER", "ANY");
-define("DEFAULT_ROLE", "member");
+define("CAN_REGISTER",	"ANY");
+define("DEFAULT_ROLE",	"member");
  
-define("SECURE", FALSE);    // FOR DEVELOPMENT ONLY!!!!
+define("SECURE",		FALSE);
 
 //Tabellen
 define("T_BLOG","blog");
@@ -47,18 +44,18 @@ define("T_NOTIFICATION","notification");
 define("T_NOTIFICATION_TYPES","notification_types");
 define("T_NEWS","news");
 
-define("T_TERMINE","termine");
-define("T_ABSTIMMUNG","abstimmung");
-define("T_ABSTIMMUNG_TITEL","abstimmung_titel");
-define("T_ABSTIMMUNG_IP","abstimmung_ip");
-define("T_ABSTIMMUNG_VORSCHLAEGE","abstimmung_vorschlaege");
-define("T_TEMPLATES","templates");
-define("T_SETTINGS","settings");
+define("T_TERMINE",					"termine");
+define("T_ABSTIMMUNG",				"abstimmung");
+define("T_ABSTIMMUNG_TITEL",		"abstimmung_titel");
+define("T_ABSTIMMUNG_IP",			"abstimmung_ip");
+define("T_ABSTIMMUNG_VORSCHLAEGE",	"abstimmung_vorschlaege");
+define("T_TEMPLATES",				"templates");
+define("T_SETTINGS",				"settings");
 
 define("T_SHOUTBOX", "shoutbox");
 
 //Ordner
-define("DIR_PLUGINS","plugins/");
+define("DIR_PLUGINS",	$_SERVER['DOCUMENT_ROOT'].'/scheune/plugins');
 define("DIR_ROOT", $_SERVER['DOCUMENT_ROOT']."/scheune");
 //define("DIR_ROOT","");
 define("DIR_IMG_ICO", "/img/ico");

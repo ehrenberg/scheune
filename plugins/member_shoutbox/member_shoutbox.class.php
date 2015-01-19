@@ -1,13 +1,11 @@
 <?php
-include_once(DIR_ROOT.'/include/db_connect.php');
-include_once(DIR_ROOT.'/include/functions.inc.php');
-include_once(DIR_ROOT.'/class/Plugin.class.php');
-
 class member_shoutbox extends plugin {
+	static $pluginSettings = array();
+	static $pluginHead;
+	static $pluginName;
+	static $tpl;
 	
-	public $pluginSettings;
-	
-	public static $PluginInfo = array(
+	static $pluginInfo = array(
 			"name"				=> "Shoutbox",
 			"description"		=> "Shoutbox",
 			"authorName"		=> "Bastian Ehrenberg",
@@ -15,18 +13,31 @@ class member_shoutbox extends plugin {
 			"version"			=> "0.0.1",
 			"configFile"		=> "config.xml",
 			"styleFile"			=> "style.css",
-			"jsFile"			=> ""
+			"jsFile"			=> "",
+			"templateFile"		=> "",
+			"tableName"			=> ""
 	);
 	
 	public function __construct() {
-		parent::__construct(self::$PluginInfo, substr(basename(__FILE__), 0, -10));
-		$this->pluginSettings = $this->LoadConfig();
+		parent::__construct(self::$pluginInfo, substr(basename(__FILE__), 0, -10));
+		self::$pluginSettings	= parent::$PluginSettings;
+		self::$pluginName		= parent::$PluginName;
+		if(self::$pluginInfo['templateFile'] != '')self::$tpl = new tpl(self::$pluginInfo['templateFile'], parent::$PluginName);
+		
+		self::$pluginHead		= parent::LoadStyle();
+		self::$pluginHead		.= parent::LoadJS();
+	}
+	public static function LoadToHead() {
+		$ret = self::$pluginHead;
+		return $ret;
+	}
+	static function LoadToAdminNav() {
+		return '';
 	}
 	
-	public function LoadConfig() {
-		$arr = array();
-		$arr = simplexml_load_file(dirname(__FILE__)."/".self::$PluginInfo['configFile']);
-		return $arr;
+	static function LoadToStartPage() {
+		$html = '';
+		return $html;
 	}
 
 	static function LoadMemberShoutbox() {

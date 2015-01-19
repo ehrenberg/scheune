@@ -20,6 +20,10 @@ if(isset($_POST['edit_settings'])) {
 
 }
 
+//Settings laden
+$cols		= array("playerText");
+$settings	= $db->getOne(T_SETTINGS, null, $cols);
+
 
 if(isset($_GET['p'])) {
 	$p		= $_GET['p'];
@@ -27,7 +31,7 @@ if(isset($_GET['p'])) {
 	
 	if($p == 'termine') {
 		if(isset($typ) == 'woche') {
-			$inhalt .= '<a class="btn" href="index.php?p=termine">Alle</a>';
+			$inhalt .= '<a class="btn" href="index.php?p=termine"><span class="lsf icon2x">list</span> Alle</a>';
 			
 			//Nächster Sonntag / Heute Sonntag?
 			if(date("w", time()) == 0) {
@@ -36,12 +40,12 @@ if(isset($_GET['p'])) {
 				$sunday		= new DateTime('next sunday');
 			}
 
-			//letzter Montag
+			/*letzter Montag
 			if(date("w", time()) == 1) {
 				$monday		= new DateTime('today');
-			} else {
+			} else {*/
 				$monday		= new DateTime('last monday');
-			}
+			//}
 			
 			$cols		= array("ID", "Text", "Von", "Bis");
 			$db->where("Von", $monday->format('Y-m-d H:i:s'), ">");
@@ -49,19 +53,19 @@ if(isset($_GET['p'])) {
 			$termine	= $db->get(T_TERMINE, null, $cols);
 			
 		} else {
-			$inhalt .= '<a class="btn" href="index.php?p=termine&typ=woche">Aktuelle Woche</a>
-						<a class="btn" href="termin.php?add=week">Neue Woche eintragen</a>';
+			$inhalt .= '<a href="index.php?p=termine&typ=woche" class="btn"><span class="lsf icon2x">calendar</span> Aktuelle Woche</a>
+						<a href="termin.php?add=week" class="btn"><span class="lsf icon2x">dailycalendar</span> Neue Woche</a>';
 			$cols		= array("ID", "Text", "Von", "Bis");
 			$termine	= $db->get(T_TERMINE, null, $cols);
 		}
 			
-		$inhalt .= '<table class="standard">
+		$inhalt .= '<table class="standard sortable">
 					<thead>
-						<th>Termin</th>
-						<th>Datum</th>
-						<th>Von</th>
-						<th>Bis</th>
-						<th></th>
+						<th width="60%">Termin</th>
+						<th width="12%">Datum</th>
+						<th width="10%">Von</th>
+						<th width="10%">Bis</th>
+						<th width="8%"></th>
 					</thead>';
 		foreach ($termine as $termin) {
 			$inhalt .= '<tr>
@@ -70,8 +74,8 @@ if(isset($_GET['p'])) {
 					<td>'.date('H:i', strtotime($termin['Von'])).' Uhr</td>
 					<td>'.date('H:i', strtotime($termin['Bis'])).' Uhr</td>
 					<td>
-						<a href="termin.php?edit='.$termin['ID'].'"><img src="img/edit.png"></a>
-						<a href="termin.php?delete='.$termin['ID'].'"><img src="img/delete.png"></a>
+						<a href="termin.php?edit='.$termin['ID'].'" class="lsf icon2x">pen</a>
+						<a href="termin.php?delete='.$termin['ID'].'" class="lsf icon2x">trash</a>
 					</td>
 				</tr>';
 		}
@@ -89,7 +93,9 @@ if(isset($_GET['p'])) {
 
 $sere = array (
 		"title"			=> WEBSITE_NAME,
-		"inhalt"		=> $inhalt
+		"inhalt"		=> $inhalt,
+		"AddCSS"		=> $Template->createStyles('admin;screen;iconset', true),
+		"AddJS"			=> $Template->createScripts('protoplasm/protoplasm;sorttable', true)
 );
 
 echo $Template->fill_tpl("main", $sere);

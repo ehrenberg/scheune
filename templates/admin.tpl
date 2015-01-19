@@ -5,10 +5,15 @@
 	<title>{TITLE}</title>
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 	<script type="text/javascript" src="http://code.jquery.com/jquery-1.11.1.min.js"></script>
-	
-	<link rel="stylesheet" type="text/css" href="../css/admin.css">
-	<script type="text/JavaScript" src="../js/sha512.js"></script>
-	<script type="text/JavaScript" src="../js/forms.js"></script>
+{ADDCSS}
+{ADDJS}
+<script language="javascript">
+	Protoplasm.use('datepicker')
+		.transform('input.datepicker', { 'locale': 'de_DE' });
+		
+	Protoplasm.use('timepicker')
+		.transform('input.timepicker', {use24hrs: true});
+</script>
 <script>
   (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
   (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),

@@ -29,7 +29,7 @@
 		<div id="player">
 			<a href="http://login.streamplus.de/app.php/shoutcast/public/playlist/download/26174.m3u">
 				{PLAYERTEXT}<br/>
-				<img src="img/radio.png" width="100px" height="66px"><br/>
+				<img src="img/Geile-Mucke.png" width="100px" height="75px"><br/>
 				Zum Radio
 			</a>
 		</div>
@@ -38,11 +38,11 @@
 	<div id="navigation">
 		<ul>
 			<a href="index.php"><li>Startseite</li></a>
-			<a href="kontakt.php"><li>Kontakt</li></a>
-			<a href="termine.php"><li>Termine</li></a>
-			<a href="toplist.php"><li>TOP 20 - Vote</li></a>
-			<a href="info.php"><li>Info</li></a>
-			<a href="member.php"><li>Clubhaus</li></a>
+			<a href="kontakt.php"><li>Gr&uuml;&szlig;e-W&uuml;nsche und Co</li></a>
+		        <a href="toplist.php"><li>TOP 20 - Vote</li></a>
+                        <a href="termine.php"><li>Sendeplan</li></a>
+                        <a href="info.php"><li>Scheune-Tipps</li></a>
+<a href="member.php"><li>Clubhaus</li></a>
 			{MEMBER_LOGOUT}
 		</ul>
 		<div class="clear"></div>
